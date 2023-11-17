@@ -12,6 +12,7 @@ global_value._init()  #全局变量初始化，初始化字典
 key = 0    #陀螺仪函数的全局变量
 buff = {}  #陀螺仪函数的全局变量
 i_flag = 1 #保存图片的全局变量
+i_order_flag = 1
 S = serial.Serial("/dev/ttyAMA0", 9600, bytesize=8, stopbits=1, timeout=0.5) #设置机械臂串口
 pm = serial.Serial("/dev/ttyAMA3", 9600, timeout=0.1) #设置屏幕串口
 MCU = serial.Serial("/dev/ttyAMA1", baudrate=230400) #设置高精度陀螺仪串口
@@ -1558,7 +1559,7 @@ def adjust_jjg_2(X, Y, ys):
             time.sleep(0.2)
         if t2 - t1 > 5:
             break
-        pic_name = 'pic/adjust_sample/jjg1/jjg_' + str(i) +'.jpg'
+        pic_name = 'pic/adjust_sample/jjg2/jjg_' + str(i) +'.jpg'
         i += 1
         cv2.imwrite(pic_name, global_value.get_value('frame_up'))
     global_value.set_value('targetA', 0)
@@ -1790,6 +1791,7 @@ def ColorRecognition(color, img):
         (startX, startY) = (0, 0)
     return (startX, startY)
 def ColorRecognition_order(color, img):
+    global i_order_flag
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     if color == 'b':
         h, s, v = cv2.split(img_hsv)
@@ -1800,18 +1802,18 @@ def ColorRecognition_order(color, img):
         result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
         (startX, startY) = maxLoc
-        cv2.imwrite('pic/color_sample/sample_blue_order_'+str(i_flag)+'.jpg', img)
     elif color == 'r':
         h, s, v = cv2.split(img_hsv)
         h1_mask = cv2.inRange(h, 0, 3)
         h2_mask = cv2.inRange(h, 175, 180)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
-        mask = h1_mask & s_mask & v_mask | h2_mask
+        mask1 = h1_mask & s_mask & v_mask
+        mask2 = h2_mask & s_mask & v_mask
+        mask = mask1 | mask2
         result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
         (startX, startY) = maxLoc
-        cv2.imwrite('pic/color_sample/sample_red_order_'+str(i_flag)+'.jpg', img)
     elif color == 'g':
         h, s, v = cv2.split(img_hsv)
         h_mask = cv2.inRange(h, 56, 77)
@@ -1821,9 +1823,10 @@ def ColorRecognition_order(color, img):
         result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
         (startX, startY) = maxLoc
-        cv2.imwrite('pic/color_sample/sample_green_order_'+str(i_flag)+'.jpg', img)
     else:
         (startX, startY) = (0, 0)
+    cv2.imwrite('pic/color_sample/sample_zp_order_'+str(i_order_flag)+'.jpg', img)
+    i_order_flag = i_order_flag +1
     return (startX, startY)
 ################################################################
 # 初赛第一次抓转盘
