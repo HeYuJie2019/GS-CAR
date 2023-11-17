@@ -1144,9 +1144,9 @@ def getPos_2(): # cjg 初赛打靶
     temp = global_value.get_value('frame_up')
     temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
-    h_mask = cv2.inRange(h, 45, 58)
-    s_mask = cv2.inRange(s, 5, 73)
-    v_mask = cv2.inRange(v, 147, 213)
+    h_mask = cv2.inRange(h, 37, 58)
+    s_mask = cv2.inRange(s, 43, 255)
+    v_mask = cv2.inRange(v, 46, 255)
     mask = h_mask & s_mask & v_mask
     result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -1185,11 +1185,11 @@ def getPos_5(color): # 暂存区取物料第一层
         h2_mask = cv2.inRange(h, 175, 180)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
-        mask = h_mask & s_mask & v_mask | h2_mask
+        mask = h1_mask & s_mask & v_mask | h2_mask
     elif color == 'g':
-        h_mask = cv2.inRange(h, 56, 71)
-        s_mask = cv2.inRange(s, 50, 255)
-        v_mask = cv2.inRange(v, 177, 245)
+        h_mask = cv2.inRange(h, 56, 77)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
     elif color == 'b':
         h_mask = cv2.inRange(h, 100, 124)
@@ -1262,11 +1262,11 @@ def getPos_8(color): # 暂存区取物料第二层
         h2_mask = cv2.inRange(h, 175, 180)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
-        mask = h_mask & s_mask & v_mask | h2_mask
+        mask = h1_mask & s_mask & v_mask | h2_mask
     elif color == 'g':
-        h_mask = cv2.inRange(h, 60, 80)
-        s_mask = cv2.inRange(s, 60, 255)
-        v_mask = cv2.inRange(v, 60, 255)
+        h_mask = cv2.inRange(h, 56, 77)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
     elif color == 'b':
         h_mask = cv2.inRange(h, 100, 124)
@@ -1758,8 +1758,8 @@ def ColorRecognition(color, img):
     if color == 'b':
         h, s, v = cv2.split(img_hsv)
         h_mask = cv2.inRange(h, 100, 124)
-        s_mask = cv2.inRange(s, 45, 255)
-        v_mask = cv2.inRange(v, 45, 255)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
         result = cv2.matchTemplate(mask, template_wl, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -1771,14 +1771,14 @@ def ColorRecognition(color, img):
         h2_mask = cv2.inRange(h, 175, 180)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
-        mask = h_mask & s_mask & v_mask | h2_mask
+        mask = h1_mask & s_mask & v_mask | h2_mask
         result = cv2.matchTemplate(mask, template_wl, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
         (startX, startY) = maxLoc
         cv2.imwrite('pic/color_sample/sample_red'+str(i_flag)+'.jpg', img)
     elif color == 'g':
         h, s, v = cv2.split(img_hsv)
-        h_mask = cv2.inRange(h, 45, 80)
+        h_mask = cv2.inRange(h, 56, 77)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
@@ -1794,8 +1794,8 @@ def ColorRecognition_order(color, img):
     if color == 'b':
         h, s, v = cv2.split(img_hsv)
         h_mask = cv2.inRange(h, 100, 124)
-        s_mask = cv2.inRange(s, 45, 255)
-        v_mask = cv2.inRange(v, 45, 255)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
         result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -1807,16 +1807,16 @@ def ColorRecognition_order(color, img):
         h2_mask = cv2.inRange(h, 175, 180)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
-        mask = h_mask & s_mask & v_mask | h2_mask
+        mask = h1_mask & s_mask & v_mask | h2_mask
         result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
         (startX, startY) = maxLoc
         cv2.imwrite('pic/color_sample/sample_red_order_'+str(i_flag)+'.jpg', img)
     elif color == 'g':
         h, s, v = cv2.split(img_hsv)
-        h_mask = cv2.inRange(h, 60, 80)
-        s_mask = cv2.inRange(s, 60, 255)
-        v_mask = cv2.inRange(v, 60, 255)
+        h_mask = cv2.inRange(h, 56, 77)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
         result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -2633,9 +2633,9 @@ print('zp: ', maxLoc)
 cjg = cv2.imread('pic/pic_sample/cjg.jpg')
 temp_hsv = cv2.cvtColor(cjg, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 45, 58)
-s_mask = cv2.inRange(s, 5, 73)
-v_mask = cv2.inRange(v, 147, 213)
+h_mask = cv2.inRange(h, 37, 58)
+s_mask = cv2.inRange(s, 43, 255)
+v_mask = cv2.inRange(v, 46, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -2645,9 +2645,9 @@ print('cjg: ', maxLoc)
 zcq1 = cv2.imread('pic/pic_sample/zcq1.jpg')
 temp_hsv = cv2.cvtColor(zcq1, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 56, 71)
-s_mask = cv2.inRange(s, 50, 255)
-v_mask = cv2.inRange(v, 177, 245)
+h_mask = cv2.inRange(h, 37, 58)
+s_mask = cv2.inRange(s, 43, 255)
+v_mask = cv2.inRange(v, 46, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -2657,9 +2657,9 @@ print('zcq1: ', maxLoc)
 zcq2 = cv2.imread('pic/pic_sample/zcq2.jpg')
 temp_hsv = cv2.cvtColor(zcq2, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 56, 71)
-s_mask = cv2.inRange(s, 50, 255)
-v_mask = cv2.inRange(v, 177, 245)
+h_mask = cv2.inRange(h, 56, 77)
+s_mask = cv2.inRange(s, 43, 255)
+v_mask = cv2.inRange(v, 46, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_zcq, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -2787,7 +2787,7 @@ while True:
                         MoveTime('f', 0.43)
                         MoveTime('cm', 0.7)
                         ToAngle(second_z)
-                        if second_z-3 < get_angle(2) < second_z+3:
+                        if second_z-2 < get_angle(2) < second_z+2:
                             ToAngle_little(second_z)
                         else:
                             ToAngle(second_z)
@@ -2798,7 +2798,7 @@ while True:
                         global_value.set_value('model',1)
                         arm_aim_bullseye()
                         adjust_cjg_2(cjg_x, cjg_y)
-                        if second_z-3 < get_angle(2) < second_z+3:
+                        if second_z-2 < get_angle(2) < second_z+2:
                             ToAngle_little(second_z)
                         else:
                             ToAngle(second_z)
@@ -2813,7 +2813,7 @@ while True:
                         MoveTime('f', 0.9)
                         MoveTime('cm', 1.0)
                         ToAngle(third_z)
-                        if third_z-3 < get_angle(2) < third_z+3:
+                        if third_z-2 < get_angle(2) < third_z+2:
                             ToAngle_little(third_z)
                         else:
                             ToAngle(third_z)
@@ -2840,7 +2840,7 @@ while True:
                         MoveTime('b', 1.2)
                         MoveTime('back_zp', 0.8)
                         ToAngle(second_z)
-                        if second_z-3 < get_angle(2) < second_z+3:
+                        if second_z-2 < get_angle(2) < second_z+2:
                             ToAngle_little(second_z)
                         else:
                             ToAngle(second_z)
@@ -2881,7 +2881,7 @@ while True:
                         MoveTime('cm', 0.8)
                         start_z = second_z
                         ToAngle(second_z)
-                        if second_z-3 < get_angle(2) < second_z+3:
+                        if second_z-2 < get_angle(2) < second_z+2:
                             ToAngle_little(second_z)
                         else:
                             ToAngle(second_z)
@@ -2907,7 +2907,7 @@ while True:
                         MoveTime('cm', 1.0)
                         start_z = third_z
                         ToAngle(third_z)
-                        if third_z-3 < get_angle(2) < third_z+3:
+                        if third_z-2 < get_angle(2) < third_z+2:
                             ToAngle_little(third_z)
                         else:
                             ToAngle(third_z)
@@ -2916,6 +2916,7 @@ while True:
                         time.sleep(0.5)
                         global_value.set_value('model', 1)
                         arm_aim_bullseye()
+                        ToAngle_little(third_z)
                         adjust_zcq_2(zcq2_x, zcq2_y)
                         ###################################
                         # 打靶
@@ -2925,14 +2926,14 @@ while True:
                         MoveTime('f', 1.40)
                         MoveTime('hj_1', 0.8)
                         ToAngle(fouth_z)
-                        if fouth_z-3 < get_angle(2) < fouth_z+3:
+                        if fouth_z-2 < get_angle(2) < fouth_z+2:
                             ToAngle_little(fouth_z)
                         else:
                             ToAngle(fouth_z)
                             ToAngle_little(fouth_z)
                         start_z = fouth_z
                         MoveTime('f', 2.6)
-                        MoveTime('hj_2', 0.8)
+                        MoveTime('hj_2', 1.0)
             elif a == 0:
                 print('exit chusai')
                 break
