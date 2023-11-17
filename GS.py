@@ -1128,43 +1128,43 @@ def Y_increase(num):
     global_value.set_value('targetC', 0)
     global_value.set_value('targetD', 0)
 ################################################################
-def getPos(): # zp
+def getPos(): # 初赛看zp
     temp = global_value.get_value('frame_up')
     temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
-    h_mask = cv2.inRange(h, 20, 34)  #26-34
-    s_mask = cv2.inRange(s, 50, 255) #43-255
-    v_mask = cv2.inRange(v, 50, 255) #46-255
+    h_mask = cv2.inRange(h, 21, 43)
+    s_mask = cv2.inRange(s, 23, 104)
+    v_mask = cv2.inRange(v, 92, 208)
     mask = h_mask & s_mask & v_mask
     result = cv2.matchTemplate(mask, template_zp, cv2.TM_CCOEFF_NORMED)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
-def getPos_2(): # cjg 打靶
+def getPos_2(): # cjg 初赛打靶
     temp = global_value.get_value('frame_up')
     temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
-    h_mask = cv2.inRange(h, 35, 77)
-    s_mask = cv2.inRange(s, 60, 255)
-    v_mask = cv2.inRange(v, 60, 255)
+    h_mask = cv2.inRange(h, 45, 58)
+    s_mask = cv2.inRange(s, 5, 73)
+    v_mask = cv2.inRange(v, 147, 213)
     mask = h_mask & s_mask & v_mask
     result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
-def getPos_3(): # zcq 码垛
+def getPos_3(): # zcq 初赛码垛
     temp = global_value.get_value('frame_up')
     temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
-    h_mask = cv2.inRange(h, 45, 80)
-    s_mask = cv2.inRange(s, 60, 255)
-    v_mask = cv2.inRange(v, 60, 255)
+    h_mask = cv2.inRange(h, 56, 71)
+    s_mask = cv2.inRange(s, 50, 255)
+    v_mask = cv2.inRange(v, 177, 245)
     mask = h_mask & s_mask & v_mask
     result = cv2.matchTemplate(mask, template_zcq, cv2.TM_CCOEFF_NORMED)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
-def getPos_4(): # order 看顺序
+def getPos_4(): # order 决赛看顺序
     temp = global_value.get_value('frame_up')
     temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
@@ -1176,31 +1176,31 @@ def getPos_4(): # order 看顺序
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
-def getPos_5(color): # jjg 精加工打靶
+def getPos_5(color): # 暂存区取物料第一层
     temp = global_value.get_value('frame_up')
     temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
     if color == 'r':
-        h_mask = cv2.inRange(h, 0, 10) #蓝色100, 124   #红色 晚上0, 10 & 白天0-10&156-180    #绿色 晚上30, 77 白天60, 80
-        h2_mask = cv2.inRange(h, 156, 180)
+        h1_mask = cv2.inRange(h, 0, 3)
+        h2_mask = cv2.inRange(h, 175, 180)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask | h2_mask
     elif color == 'g':
-        h_mask = cv2.inRange(h, 35, 77)
-        s_mask = cv2.inRange(s, 60, 255)
-        v_mask = cv2.inRange(v, 60, 255)
+        h_mask = cv2.inRange(h, 56, 71)
+        s_mask = cv2.inRange(s, 50, 255)
+        v_mask = cv2.inRange(v, 177, 245)
         mask = h_mask & s_mask & v_mask
     elif color == 'b':
-        h_mask = cv2.inRange(h, 100, 124) #蓝色100, 124   #红色 晚上0, 10 & 白天156, 180    #绿色 晚上30, 77 白天60, 80
+        h_mask = cv2.inRange(h, 100, 124)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
-    result = cv2.matchTemplate(mask, template_zcq, cv2.TM_CCOEFF_NORMED)
+    result = cv2.matchTemplate(mask, template_1_level, cv2.TM_CCOEFF_NORMED)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
-def getPos_6(color):
+def getPos_6(color): #转盘打靶识别物料位置
     temp = global_value.get_value('frame_up')
     height, width = temp.shape[:2]
     center = (width/2, height/2)
@@ -1229,7 +1229,7 @@ def getPos_6(color):
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
-def getPos_7(color):
+def getPos_7(color): #转盘打靶识别静止或运动
     temp = global_value.get_value('frame_up')
     temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
@@ -1250,6 +1250,30 @@ def getPos_7(color):
         v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
     result = cv2.matchTemplate(mask, template_zp_bullseye, cv2.TM_CCOEFF_NORMED)
+    (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
+    x, y = maxLoc
+    return x, y
+def getPos_8(color): # 暂存区取物料第二层
+    temp = global_value.get_value('frame_up')
+    temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
+    h, s, v = cv2.split(temp_hsv)
+    if color == 'r':
+        h1_mask = cv2.inRange(h, 0, 3)
+        h2_mask = cv2.inRange(h, 175, 180)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
+        mask = h_mask & s_mask & v_mask | h2_mask
+    elif color == 'g':
+        h_mask = cv2.inRange(h, 60, 80)
+        s_mask = cv2.inRange(s, 60, 255)
+        v_mask = cv2.inRange(v, 60, 255)
+        mask = h_mask & s_mask & v_mask
+    elif color == 'b':
+        h_mask = cv2.inRange(h, 100, 124)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
+        mask = h_mask & s_mask & v_mask
+    result = cv2.matchTemplate(mask, template_2_level, cv2.TM_CCOEFF_NORMED)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
@@ -1510,6 +1534,39 @@ def adjust_jjg_1(X, Y, ys):
     global_value.set_value('targetD', 0)
     print('jjg: ', getPos_5(ys))
 ################################################################
+def adjust_jjg_2(X, Y, ys):
+    k = 0.30
+    i = 1
+    x, y = getPos_5(ys)
+    t1 = t2 = time.time()
+    global_value.set_value('model', 1)
+    while (X-7 < x < X+7 and Y-7 < y < Y+7) is not True:
+        t2 = time.time()
+        x, y = getPos_5(ys)
+        time.sleep(0.2)
+        if y > Y+7:
+            Y_decrease((y-Y)*k)
+            time.sleep(0.2)
+        if y < Y-7:
+            Y_increase((Y-y)*k)
+            time.sleep(0.2)
+        if x < X-7:
+            X_increase((X-x)*k)
+            time.sleep(0.2)
+        if x > X+7:
+            X_decrease((x-X)*k)
+            time.sleep(0.2)
+        if t2 - t1 > 5:
+            break
+        pic_name = 'pic/adjust_sample/jjg1/jjg_' + str(i) +'.jpg'
+        i += 1
+        cv2.imwrite(pic_name, global_value.get_value('frame_up'))
+    global_value.set_value('targetA', 0)
+    global_value.set_value('targetB', 0)
+    global_value.set_value('targetC', 0)
+    global_value.set_value('targetD', 0)
+    print('jjg: ', getPos_5(ys))
+################################################################
 # 初使动作
 def arm_initialize():
     # S.write(bytes.fromhex('ff 01 0b 14 00'))
@@ -1701,8 +1758,8 @@ def ColorRecognition(color, img):
     if color == 'b':
         h, s, v = cv2.split(img_hsv)
         h_mask = cv2.inRange(h, 100, 124)
-        s_mask = cv2.inRange(s, 43, 255)
-        v_mask = cv2.inRange(v, 46, 255)
+        s_mask = cv2.inRange(s, 45, 255)
+        v_mask = cv2.inRange(v, 45, 255)
         mask = h_mask & s_mask & v_mask
         result = cv2.matchTemplate(mask, template_wl, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -1710,8 +1767,8 @@ def ColorRecognition(color, img):
         cv2.imwrite('pic/color_sample/sample_blue'+str(i_flag)+'.jpg', img)
     elif color == 'r':
         h, s, v = cv2.split(img_hsv)
-        h_mask = cv2.inRange(h, 0, 10) #蓝色100, 124   #红色 晚上0, 10 & 白天0-10&156-180    #绿色 晚上30, 77 白天60, 80
-        h2_mask = cv2.inRange(h, 156, 180)
+        h1_mask = cv2.inRange(h, 0, 3)
+        h2_mask = cv2.inRange(h, 175, 180)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask | h2_mask
@@ -1722,8 +1779,8 @@ def ColorRecognition(color, img):
     elif color == 'g':
         h, s, v = cv2.split(img_hsv)
         h_mask = cv2.inRange(h, 45, 80)
-        s_mask = cv2.inRange(s, 60, 255)
-        v_mask = cv2.inRange(v, 60, 255)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
         result = cv2.matchTemplate(mask, template_wl, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -1737,34 +1794,34 @@ def ColorRecognition_order(color, img):
     if color == 'b':
         h, s, v = cv2.split(img_hsv)
         h_mask = cv2.inRange(h, 100, 124)
-        s_mask = cv2.inRange(s, 43, 255)
-        v_mask = cv2.inRange(v, 46, 255)
+        s_mask = cv2.inRange(s, 45, 255)
+        v_mask = cv2.inRange(v, 45, 255)
         mask = h_mask & s_mask & v_mask
         result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
         (startX, startY) = maxLoc
-        cv2.imwrite('pic/color_sample/sample_blue'+str(i_flag)+'.jpg', img)
+        cv2.imwrite('pic/color_sample/sample_blue_order_'+str(i_flag)+'.jpg', img)
     elif color == 'r':
         h, s, v = cv2.split(img_hsv)
-        h_mask = cv2.inRange(h, 0, 10) #蓝色100, 124   #红色 晚上0, 10 & 白天0-10&156-180    #绿色 晚上30, 77 白天60, 80
-        h2_mask = cv2.inRange(h, 156, 180)
+        h1_mask = cv2.inRange(h, 0, 3)
+        h2_mask = cv2.inRange(h, 175, 180)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask | h2_mask
         result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
         (startX, startY) = maxLoc
-        cv2.imwrite('pic/color_sample/sample_red'+str(i_flag)+'.jpg', img)
+        cv2.imwrite('pic/color_sample/sample_red_order_'+str(i_flag)+'.jpg', img)
     elif color == 'g':
         h, s, v = cv2.split(img_hsv)
-        h_mask = cv2.inRange(h, 45, 80)
+        h_mask = cv2.inRange(h, 60, 80)
         s_mask = cv2.inRange(s, 60, 255)
         v_mask = cv2.inRange(v, 60, 255)
         mask = h_mask & s_mask & v_mask
         result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
         (startX, startY) = maxLoc
-        cv2.imwrite('pic/color_sample/sample_green'+str(i_flag)+'.jpg', img)
+        cv2.imwrite('pic/color_sample/sample_green_order_'+str(i_flag)+'.jpg', img)
     else:
         (startX, startY) = (0, 0)
     return (startX, startY)
@@ -2564,9 +2621,9 @@ CONTROL_D.start()
 zp = cv2.imread('pic/pic_sample/zp.jpg')
 temp_hsv = cv2.cvtColor(zp, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 20, 34)  #26-34
-s_mask = cv2.inRange(s, 50, 255) #43-255
-v_mask = cv2.inRange(v, 50, 255) #46-255
+h_mask = cv2.inRange(h, 21, 43)
+s_mask = cv2.inRange(s, 23, 104)
+v_mask = cv2.inRange(v, 92, 208)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_zp, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -2576,9 +2633,9 @@ print('zp: ', maxLoc)
 cjg = cv2.imread('pic/pic_sample/cjg.jpg')
 temp_hsv = cv2.cvtColor(cjg, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 35, 77)
-s_mask = cv2.inRange(s, 60, 255)
-v_mask = cv2.inRange(v, 60, 255)
+h_mask = cv2.inRange(h, 45, 58)
+s_mask = cv2.inRange(s, 5, 73)
+v_mask = cv2.inRange(v, 147, 213)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -2588,9 +2645,9 @@ print('cjg: ', maxLoc)
 zcq1 = cv2.imread('pic/pic_sample/zcq1.jpg')
 temp_hsv = cv2.cvtColor(zcq1, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 35, 77)
-s_mask = cv2.inRange(s, 60, 255)
-v_mask = cv2.inRange(v, 60, 255)
+h_mask = cv2.inRange(h, 56, 71)
+s_mask = cv2.inRange(s, 50, 255)
+v_mask = cv2.inRange(v, 177, 245)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -2600,9 +2657,9 @@ print('zcq1: ', maxLoc)
 zcq2 = cv2.imread('pic/pic_sample/zcq2.jpg')
 temp_hsv = cv2.cvtColor(zcq2, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 45, 80)
-s_mask = cv2.inRange(s, 60, 255)
-v_mask = cv2.inRange(v, 60, 255)
+h_mask = cv2.inRange(h, 56, 71)
+s_mask = cv2.inRange(s, 50, 255)
+v_mask = cv2.inRange(v, 177, 245)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_zcq, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -3451,8 +3508,8 @@ while True:
                 arm_initialize()
             elif a == 1:
                 arm_grab()
-            elif a == 2:
-                arm_interim()
+            elif a == 2: # 采集看物料顺序
+                cv2.imwrite('pic/pic_sample/order.jpg', global_value.get_value('frame_up'))
             elif a == 3:
                 arm_losse()
             elif a == 4:
