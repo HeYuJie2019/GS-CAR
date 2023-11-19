@@ -13,6 +13,18 @@ key = 0    #陀螺仪函数的全局变量
 buff = {}  #陀螺仪函数的全局变量
 i_flag = 1 #保存图片的全局变量
 i_order_flag = 1
+
+# GPIO14 = TXD0 -> ttyAMA0
+# GPIO0  = TXD2 -> ttyAMA1
+# GPIO4  = TXD3 -> ttyAMA2
+# GPIO8  = TXD4 -> ttyAMA3
+# GPIO12 = TXD5 -> ttyAMA4
+
+# GPIO15 = RXD0 -> ttyAMA0
+# GPIO1  = RXD2 -> ttyAMA1
+# GPIO5  = RXD3 -> ttyAMA2
+# GPIO9  = RXD4 -> ttyAMA3
+# GPIO13 = RXD5 -> ttyAMA4
 S = serial.Serial("/dev/ttyAMA0", 9600, bytesize=8, stopbits=1, timeout=0.5) #设置机械臂串口
 pm = serial.Serial("/dev/ttyAMA3", 9600, timeout=0.1) #设置屏幕串口
 MCU = serial.Serial("/dev/ttyAMA1", baudrate=230400) #设置高精度陀螺仪串口
@@ -3111,32 +3123,21 @@ while True:
                         global_value.set_value('frame_up_flag', 1)
                         MoveTime('b', 0.80)
                         MoveTime('back_zp', 0.8)
-                        ToAngle(second_z)
-                        if second_z-3 < get_angle(2) < second_z+3:
-                            ToAngle_little(second_z)
-                        else:
-                            ToAngle(second_z)
-                            ToAngle_little(second_z)
+                        ToAngle_Plus(second_z)
+                        global_value.set_value('model', 0)
                         start_z = second_z
                         MoveTime('f', 2.20)
                         MoveTime('hj_2', 0.8)
-                        ToAngle(third_z)
-                        if third_z-2 < get_angle(2) < third_z+2:
-                            ToAngle_little(third_z)
-                        else:
-                            ToAngle(third_z)
-                            ToAngle_little(third_z)
+                        ToAngle_Plus(third_z)
+                        global_value.set_value('model', 0)
                         start_z = third_z
                         MoveTime('b', 1.60)
                         arm_see_order()
                         ###################################
                         # 对准双层物料看顺序
+                        ToAngle_adjust(third_z)
                         adjust_order(order_x, order_y)
-                        if third_z-2 < get_angle(2) < third_z+2:
-                            ToAngle_little(third_z)
-                        else:
-                            ToAngle(third_z)
-                            ToAngle_little(third_z)
+                        ToAngle_adjust(third_z)
                         adjust_order(order_x, order_y)
                         time.sleep(0.5)
                         ###################################
@@ -3156,12 +3157,9 @@ while True:
                         ###################################
                         # 对准暂存区
                         arm_aim_bullseye()
+                        ToAngle_adjust(third_z)
                         adjust_jjg_1(first_level_x, first_level_y, list(order1.keys())[1])
-                        if third_z-2 < get_angle(2) < third_z+2:
-                            ToAngle_little(third_z)
-                        else:
-                            ToAngle(third_z)
-                            ToAngle_little(third_z)
+                        ToAngle_adjust(third_z)
                         adjust_jjg_1(first_level_x, first_level_y, list(order1.keys())[1])
                         ###################################
                         # 抓暂存区物料
@@ -3171,12 +3169,8 @@ while True:
                         global_value.set_value('model', 0)
                         MoveTime('b', 0.95)
                         MoveTime('back_zp', 1.0)
-                        ToAngle(second_z)
-                        if second_z-2 < get_angle(2) < second_z+2:
-                            ToAngle_little(second_z)
-                        else:
-                            ToAngle(second_z)
-                            ToAngle_little(second_z)
+                        ToAngle_Plus(second_z)
+                        global_value.set_value('model', 0)
                         start_z = second_z
                         MoveTime('b', 0.9)
                         ###################################
@@ -3184,12 +3178,9 @@ while True:
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_aim_bullseye()
+                        ToAngle_adjust(second_z)
                         adjust_cjg_2(cjg_x, cjg_y)
-                        if second_z-2 < get_angle(2) < second_z+2:
-                            ToAngle_little(second_z)
-                        else:
-                            ToAngle(second_z)
-                            ToAngle_little(second_z)
+                        ToAngle_adjust(second_z)
                         adjust_cjg_2(cjg_x, cjg_y)
                         ###################################
                         # 打靶精加工
@@ -3199,12 +3190,8 @@ while True:
                         global_value.set_value('model', 0)
                         MoveTime('b', 1.3)
                         MoveTime('back_zp', 0.8)
-                        ToAngle(first_z)
-                        if first_z-2 < get_angle(2) < first_z+2:
-                            ToAngle_little(first_z)
-                        else:
-                            ToAngle(first_z)
-                            ToAngle_little(first_z)
+                        ToAngle_Plus(first_z)
+                        global_value.set_value('model', 0)
                         start_z = first_z
                         MoveTime('b', 0.4)
                         time.sleep(0.5)
@@ -3212,12 +3199,9 @@ while True:
                         # 定位转盘
                         global_value.set_value('model',1)
                         arm_aim_turntable()
+                        ToAngle_adjust(first_z)
                         adjust_zp_1(zp_x, zp_y) #定位
-                        if first_z-2 < get_angle(2) < first_z+2:
-                            ToAngle_little(first_z)
-                        else:
-                            ToAngle(first_z)
-                            ToAngle_little(first_z)
+                        ToAngle_adjust(first_z)
                         adjust_zp_1(zp_x, zp_y) #定位
                         ###################################
                         # 打靶成品区
@@ -3227,21 +3211,13 @@ while True:
                         global_value.set_value('model', 0)
                         MoveTime('f', 0.43)
                         MoveTime('cm', 0.7)
-                        ToAngle(second_z)
-                        if second_z-2 < get_angle(2) < second_z+2:
-                            ToAngle_little(second_z)
-                        else:
-                            ToAngle(second_z)
-                            ToAngle_little(second_z)
+                        ToAngle_Plus(second_z)
+                        global_value.set_value('model', 0)
                         start_z = second_z
                         MoveTime('f', 2.35)
                         MoveTime('cm', 1.0)
-                        ToAngle(third_z)
-                        if third_z-2 < get_angle(2) < third_z+2:
-                            ToAngle_little(third_z)
-                        else:
-                            ToAngle(third_z)
-                            ToAngle_little(third_z)
+                        ToAngle_Plus(third_z)
+                        global_value.set_value('model', 0)
                         start_z = third_z
                         MoveTime('f', 1.1)
                         ###################################
@@ -3249,12 +3225,9 @@ while True:
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_see_wl()
+                        ToAngle_adjust(third_z)
                         adjust_jjg_1(first_level_x, first_level_y, list(order2.keys())[1])
-                        if third_z-2 < get_angle(2) < third_z+2:
-                            ToAngle_little(third_z)
-                        else:
-                            ToAngle(third_z)
-                            ToAngle_little(third_z)
+                        ToAngle_adjust(third_z)
                         adjust_jjg_1(first_level_x, first_level_y, list(order2.keys())[1])
                         ###################################
                         # 取二层物料
@@ -3264,12 +3237,8 @@ while True:
                         global_value.set_value('model', 0)
                         MoveTime('b', 1.1)
                         MoveTime('back_zp', 1.0)
-                        ToAngle(second_z)
-                        if second_z-2 < get_angle(2) < second_z+2:
-                            ToAngle_little(second_z)
-                        else:
-                            ToAngle(second_z)
-                            ToAngle_little(second_z)
+                        ToAngle_Plus(second_z)
+                        global_value.set_value('model', 0)
                         start_z = second_z
                         MoveTime('b', 0.9)
                         ###################################
@@ -3277,12 +3246,9 @@ while True:
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_aim_bullseye()
+                        ToAngle_adjust(second_z)
                         adjust_cjg_2(cjg_x, cjg_y)
-                        if second_z-2 < get_angle(2) < second_z+2:
-                            ToAngle_little(second_z)
-                        else:
-                            ToAngle(second_z)
-                            ToAngle_little(second_z)
+                        ToAngle_adjust(second_z)
                         adjust_cjg_2(cjg_x, cjg_y)
                         ###################################
                         # 打靶精加工
@@ -3292,12 +3258,8 @@ while True:
                         global_value.set_value('model', 0)
                         MoveTime('b', 1.3)
                         MoveTime('back_zp', 0.8)
-                        ToAngle(first_z)
-                        if first_z-2 < get_angle(2) < first_z+2:
-                            ToAngle_little(first_z)
-                        else:
-                            ToAngle(first_z)
-                            ToAngle_little(first_z)
+                        ToAngle_Plus(first_z)
+                        global_value.set_value('model', 0)
                         start_z = first_z
                         MoveTime('b', 0.4)
                         time.sleep(0.5)
@@ -3305,12 +3267,9 @@ while True:
                         # 定位转盘
                         global_value.set_value('model',1)
                         arm_aim_turntable()
+                        ToAngle_adjust(first_z)
                         adjust_zp_1(zp_x, zp_y) #定位
-                        if first_z-2 < get_angle(2) < first_z+2:
-                            ToAngle_little(first_z)
-                        else:
-                            ToAngle(first_z)
-                            ToAngle_little(first_z)
+                        ToAngle_adjust(first_z)
                         adjust_zp_1(zp_x, zp_y) #定位
                         ###################################
                         # 打靶成品区
