@@ -1427,6 +1427,31 @@ def get_order(frame):
         order['g'] = 3
     return order
 ################################################################
+def get_order_zcq(frame):
+    order = {}
+    r_x, _ = ColorRecognition_order_zcq('r', frame)
+    b_x, _ = ColorRecognition_order_zcq('b', frame)
+    g_x, _ = ColorRecognition_order_zcq('g', frame)
+    if r_x < b_x and r_x < g_x:
+        order['r'] = 1
+    elif b_x < r_x and b_x < g_x:
+        order['b'] = 1
+    elif g_x < b_x and g_x < r_x:
+        order['g'] = 1
+    if r_x < b_x < g_x or g_x < b_x < r_x:
+        order['b'] = 2
+    elif b_x < r_x < g_x or g_x < r_x < b_x:
+        order['r'] = 2
+    elif r_x < g_x < b_x or b_x < g_x < r_x:
+        order['g'] = 2
+    if r_x > b_x and r_x > g_x:
+        order['r'] = 3
+    elif b_x > r_x and b_x > g_x:
+        order['b'] = 3
+    elif g_x > b_x and g_x > r_x:
+        order['g'] = 3
+    return order
+################################################################
 def adjust_zp_1(X, Y):
     k = 0.3
     i = 1
@@ -1914,7 +1939,11 @@ def ColorRecognition(color, img):
         (startX, startY) = (0, 0)
     return (startX, startY)
 def ColorRecognition_order(color, img):
-    img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    height, width = img.shape[:2]
+    center = (width/2, height/2)
+    rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=15, scale=1)
+    rotated_temp = cv2.warpAffine(src=img, M=rotate_matrix, dsize=(width, height))
+    img_hsv = cv2.cvtColor(rotated_temp, cv2.COLOR_BGR2HSV)
     if color == 'b':
         h, s, v = cv2.split(img_hsv)
         h_mask = cv2.inRange(h, 100, 124)
@@ -1943,6 +1972,42 @@ def ColorRecognition_order(color, img):
         v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
         result = cv2.matchTemplate(mask, template_wl, cv2.TM_CCOEFF_NORMED)
+        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
+        (startX, startY) = maxLoc
+    else:
+        (startX, startY) = (0, 0)
+    return (startX, startY)
+def ColorRecognition_order_zcq(color, img):
+    
+    img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    if color == 'b':
+        h, s, v = cv2.split(img_hsv)
+        h_mask = cv2.inRange(h, 100, 124)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
+        mask = h_mask & s_mask & v_mask
+        result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
+        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
+        (startX, startY) = maxLoc
+    elif color == 'r':
+        h, s, v = cv2.split(img_hsv)
+        h1_mask = cv2.inRange(h, 0, 3)
+        h2_mask = cv2.inRange(h, 175, 180)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
+        mask1 = h1_mask & s_mask & v_mask
+        mask2 = h2_mask & s_mask & v_mask
+        mask = mask1 | mask2
+        result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
+        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
+        (startX, startY) = maxLoc
+    elif color == 'g':
+        h, s, v = cv2.split(img_hsv)
+        h_mask = cv2.inRange(h, 37, 77)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
+        mask = h_mask & s_mask & v_mask
+        result = cv2.matchTemplate(mask, template_order_2, cv2.TM_CCOEFF_NORMED)
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
         (startX, startY) = maxLoc
     else:
@@ -3037,6 +3102,7 @@ while True:
                         arm_zcq_2()
                         ###################################
                         global_value.set_value('model', 0)
+                        time.sleep(0.5)
                         MoveTime('f', 1.40)
                         MoveTime('hj_1', 0.8)
                         ToAngle_Plus(fouth_z-2)
@@ -3121,22 +3187,16 @@ while True:
                             ToAngle_little(third_z)
                         start_z = third_z
                         MoveTime('b', 1.60)
-                        arm_see_order()
-                        ###################################
-                        # 对准双层物料看顺序
-                        adjust_order(order_x, order_y)
-                        if third_z-2 < get_angle(2) < third_z+2:
-                            ToAngle_little(third_z)
-                        else:
-                            ToAngle(third_z)
-                            ToAngle_little(third_z)
-                        adjust_order(order_x, order_y)
-                        time.sleep(0.5)
+                        arm_see_wl()
                         ###################################
                         # 看物料顺序
                         Order_temp = global_value.get_value('frame_up')
-                        order1_pic = Order_temp[:, 230:400]
-                        order2_pic = Order_temp[:, 0:230]
+                        height, width = Order_temp.shape[:2]
+                        center = (width/2, height/2)
+                        rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=45, scale=1)
+                        rotated_temp = cv2.warpAffine(src=Order_temp, M=rotate_matrix, dsize=(width, height))
+                        order1_pic = rotated_temp[50:210, :]
+                        order2_pic = rotated_temp[210:, :]
 
                         cv2.imwrite('pic/order1.jpg', order1_pic)
                         cv2.imwrite('pic/order2.jpg', order2_pic)
@@ -3619,7 +3679,6 @@ while True:
             elif a == 1:
                 arm_grab()
             elif a == 2: # 采集看物料顺序
-                arm_see_order()
                 cv2.imwrite('pic/pic_sample/order.jpg', global_value.get_value('frame_up'))
             elif a == 3:
                 arm_losse()
