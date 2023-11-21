@@ -1737,7 +1737,7 @@ def adjust_order(X, Y):
     print('order: ', getPos_4())
 ################################################################
 def adjust_jjg_1(X, Y, ys):
-    k = 0.2
+    k = 0.15
     i = 1
     x, y = getPos_5(ys)
     t1 = t2 = time.time()
@@ -1770,7 +1770,7 @@ def adjust_jjg_1(X, Y, ys):
     print('jjg: ', getPos_5(ys))
 ################################################################
 def adjust_jjg_2(X, Y, ys):
-    k = 0.2
+    k = 0.15
     i = 1
     x, y = getPos_8(ys)
     t1 = t2 = time.time()
@@ -2557,7 +2557,7 @@ def grab_zcq_second_level():
         second_level_2()
     elif order2[ys[3]] == 3:
         second_level_3()
-    time.sleep(0.5)
+    time.sleep(0.8)
     if ys[3] == 'b':
         S.write(data0)
         time.sleep(2.1)
@@ -2574,7 +2574,7 @@ def grab_zcq_second_level():
         S.write(data3)
         time.sleep(2.0)
     
-    time.sleep(0.5)
+    time.sleep(0.8)
         
     if order2[ys[4]] == 1:
         second_level_1()
@@ -2582,7 +2582,7 @@ def grab_zcq_second_level():
         second_level_2()
     elif order2[ys[4]] == 3:
         second_level_3()
-    time.sleep(0.5)
+    time.sleep(0.8)
     if ys[4] == 'b':
         S.write(data0)
         time.sleep(2.1)
@@ -2599,7 +2599,7 @@ def grab_zcq_second_level():
         S.write(data3)
         time.sleep(2.0)
 
-    time.sleep(0.5)
+    time.sleep(0.8)
     
     if order2[ys[5]] == 1:
         second_level_1()
@@ -2906,17 +2906,14 @@ def arm_cpq_2():
         if MoveOrStatic_2('r') == 'static':
             if ys[3] == 'b':
                 _, _, k = getPos_9(ys[3])
-                print('b1:', k)
                 if k < 1000000:
                     break
             elif ys[3] == 'r':
                 _, _, k = getPos_9(ys[3])
-                print('r1:', k)
                 if k < 2000000:
                     break
             elif ys[3] == 'g':
                 _, _, k = getPos_9(ys[3])
-                print('g1:', k)
                 if k < 2000000:
                     break
     cv2.imwrite('pic/adjust_sample/cpq/cpq2-1.jpg', global_value.get_value('frame_up'))
@@ -2945,17 +2942,14 @@ def arm_cpq_2():
         if MoveOrStatic_2('r') == 'static':
             if ys[4] == 'b':
                 _, _, k = getPos_9(ys[4])
-                print('b2:', k)
                 if k < 1000000:
                     break
             elif ys[4] == 'r':
                 _, _, k = getPos_9(ys[4])
-                print('r2:', k)
                 if k < 2000000:
                     break
             elif ys[4] == 'g':
                 _, _, k = getPos_9(ys[4])
-                print('g2:', k)
                 if k < 2000000:
                     break
     cv2.imwrite('pic/adjust_sample/cpq/cpq2-2.jpg', global_value.get_value('frame_up'))
@@ -2984,17 +2978,14 @@ def arm_cpq_2():
         if MoveOrStatic_2('r') == 'static':
             if ys[5] == 'b':
                 _, _, k = getPos_9(ys[5])
-                print('b3:', k)
                 if k < 1000000:
                     break
             elif ys[5] == 'r':
                 _, _, k = getPos_9(ys[5])
-                print('r3:', k)
                 if k < 2500000:
                     break
             elif ys[5] == 'g':
                 _, _, k = getPos_9(ys[5])
-                print('g3:', k)
                 if k < 2500000:
                     break
     cv2.imwrite('pic/adjust_sample/cpq/cpq2-3.jpg', global_value.get_value('frame_up'))
@@ -3111,6 +3102,7 @@ mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_2_level, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
 second_level_x, second_level_y = maxLoc
+second_level_x, second_level_y = second_level_x+5, second_level_y-5
 print('second_level: ', maxLoc)
 ################################################################
 pin_init()
@@ -3333,10 +3325,10 @@ while True:
                         arm_zcq_2()
                         ###################################
                         global_value.set_value('model', 0)
-                        global_value.set_value('model', 0)
                         MoveTime('f', 1.40)
                         MoveTime('hj_1', 0.8)
                         ToAngle_Plus(fouth_z-2)
+                        global_value.set_value('model', 0)
                         start_z = fouth_z-2
                         MoveTime('f', 2.6)
                         MoveTime('hj_2', 1.0)
@@ -3449,7 +3441,7 @@ while True:
                         ###################################
                         # 抓完物料去精加工区
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.0)
+                        MoveTime('b', 1.2)
                         MoveTime('back_zp', 1.0)
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
@@ -3472,7 +3464,7 @@ while True:
                         ###################################
                         # 打完靶后去转盘
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.2)
+                        MoveTime('b', 1.3)
                         MoveTime('back_zp', 1.0)
                         ToAngle_Plus(first_z)
                         global_value.set_value('model', 0)
@@ -3524,7 +3516,7 @@ while True:
                         ###################################
                         # 抓完物料去精加工区
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.1)
+                        MoveTime('b', 1.2)
                         MoveTime('back_zp', 1.0)
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
@@ -3547,7 +3539,7 @@ while True:
                         ###################################
                         # 打完靶后去转盘
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.2)
+                        MoveTime('b', 1.3)
                         MoveTime('back_zp', 1.0)
                         ToAngle_Plus(first_z)
                         global_value.set_value('model', 0)
