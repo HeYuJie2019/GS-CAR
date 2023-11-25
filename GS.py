@@ -1387,7 +1387,7 @@ def getPos_9(color): #第二次转盘打靶识别物料位置
     center = (width/2, height/2)
     rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=45, scale=1)
     rotated_temp = cv2.warpAffine(src=temp, M=rotate_matrix, dsize=(width, height))
-    rotated_temp = rotated_temp[140:340]
+    rotated_temp = rotated_temp[180:340]
     temp_hsv = cv2.cvtColor(rotated_temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
     if color == 'r':
@@ -1416,7 +1416,7 @@ def getPos_7(color): #转盘打靶识别静止或运动
     center = (width/2, height/2)
     rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=45, scale=1)
     rotated_temp = cv2.warpAffine(src=temp, M=rotate_matrix, dsize=(width, height))
-    rotated_temp = rotated_temp[170:-1]
+    rotated_temp = rotated_temp[180:-1]
     temp_hsv = cv2.cvtColor(rotated_temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
     if color == 'r':
@@ -1559,6 +1559,39 @@ def adjust_zp_1(X, Y):
             X_increase((X-x)*k)
             time.sleep(0.2)
         if x > X+12:
+            X_decrease((x-X)*k)
+            time.sleep(0.2)
+        if t2 - t1 > 5:
+            break
+        pic_name = 'pic/adjust_sample/zp/zp_' + str(i) +'.jpg'
+        i += 1
+        cv2.imwrite(pic_name, global_value.get_value('frame_up'))
+    global_value.set_value('targetA', 0)
+    global_value.set_value('targetB', 0)
+    global_value.set_value('targetC', 0)
+    global_value.set_value('targetD', 0)
+    print('zp: ', getPos())
+################################################################
+def adjust_zp_2(X, Y):
+    k = 0.3
+    i = 1
+    x, y = getPos()
+    t1 = t2 = time.time()
+    global_value.set_value('model', 1)
+    while (X-2 < x < X+2 and Y-2 < y < Y+2) is not True:
+        t2 = time.time()
+        x, y = getPos()
+        time.sleep(0.2)
+        if y > Y+2:
+            Y_decrease((y-Y)*k)
+            time.sleep(0.2)
+        if y < Y-2:
+            Y_increase((Y-y)*k)
+            time.sleep(0.2)
+        if x < X-2:
+            X_increase((X-x)*k)
+            time.sleep(0.2)
+        if x > X+2:
             X_decrease((x-X)*k)
             time.sleep(0.2)
         if t2 - t1 > 5:
@@ -1776,20 +1809,20 @@ def adjust_jjg_2(X, Y, ys):
     x, y = getPos_8(ys)
     t1 = t2 = time.time()
     global_value.set_value('model', 1)
-    while (X-10 < x < X+10 and Y-10 < y < Y+10) is not True:
+    while (X-5 < x < X+5 and Y-5 < y < Y+5) is not True:
         t2 = time.time()
         x, y = getPos_8(ys)
         time.sleep(0.2)
-        if y > Y+10:
+        if y > Y+5:
             Y_decrease((y-Y)*k)
             time.sleep(0.2)
-        if y < Y-10:
+        if y < Y-5:
             Y_increase((Y-y)*k)
             time.sleep(0.2)
-        if x < X-10:
+        if x < X-5:
             X_increase((X-x)*k)
             time.sleep(0.2)
-        if x > X+10:
+        if x > X+5:
             X_decrease((x-X)*k)
             time.sleep(0.2)
         if t2 - t1 > 5:
@@ -1817,11 +1850,11 @@ def arm_initialize():
 def arm_aim_turntable():
     S.write(bytes.fromhex('ff 01 0b 14 00'))
     S.write(bytes.fromhex('ff 02 0b 20 03'))
-    S.write(bytes.fromhex('ff 01 0a 0a 00'))
+    S.write(bytes.fromhex('ff 01 0a 18 00'))
     S.write(bytes.fromhex('ff 02 0a 57 04'))
-    S.write(bytes.fromhex('ff 01 09 10 00'))
+    S.write(bytes.fromhex('ff 01 09 18 00'))
     S.write(bytes.fromhex('ff 02 09 98 07'))
-    S.write(bytes.fromhex('ff 01 08 14 00'))
+    S.write(bytes.fromhex('ff 01 08 28 00'))
     S.write(bytes.fromhex('ff 02 08 2b 03'))
 # 看物料动作
 def arm_see_wl():
@@ -1854,7 +1887,7 @@ def arm_aim_bullseye():
 # 抓取动作
 def arm_grab():
     S.write(bytes.fromhex('ff 01 0b 14 00'))
-    S.write(bytes.fromhex('ff 02 0b f2 05'))
+    S.write(bytes.fromhex('ff 02 0b fd 05'))
 # 放手动作
 def arm_losse():
     S.write(bytes.fromhex('ff 01 0b 14 00'))
@@ -1963,7 +1996,7 @@ def second_level_1():
     S.write(bytes.fromhex('ff 02 0b 8e 04'))
 def second_level_2():
     S.write(bytes.fromhex('ff 01 08 18 00'))
-    S.write(bytes.fromhex('ff 02 08 4c 03'))
+    S.write(bytes.fromhex('ff 02 08 36 03'))
     S.write(bytes.fromhex('ff 01 09 18 00'))
     S.write(bytes.fromhex('ff 02 09 8e 04'))
     S.write(bytes.fromhex('ff 01 0a 18 00'))
@@ -1971,7 +2004,7 @@ def second_level_2():
     S.write(bytes.fromhex('ff 02 0b 8e 04'))
 def second_level_3():
     S.write(bytes.fromhex('ff 01 08 18 00'))
-    S.write(bytes.fromhex('ff 02 08 d1 03'))
+    S.write(bytes.fromhex('ff 02 08 c6 03'))
     S.write(bytes.fromhex('ff 01 09 18 00'))
     S.write(bytes.fromhex('ff 02 09 1f 04'))
     S.write(bytes.fromhex('ff 01 0a 18 00'))
@@ -2017,6 +2050,33 @@ def arm_zp3():
     S.write(bytes.fromhex('ff 02 09 57 04'))
     S.write(bytes.fromhex('ff 01 0a 18 00'))
     S.write(bytes.fromhex('ff 02 0a dc 05'))
+# 转盘码垛一
+def arm_zp_md1():
+    S.write(bytes.fromhex('ff 01 08 18 00'))
+    S.write(bytes.fromhex('ff 01 09 14 00'))
+    S.write(bytes.fromhex('ff 01 0a 0a 00'))
+    S.write(bytes.fromhex('ff 02 0a dc 04'))
+    S.write(bytes.fromhex('ff 02 09 d0 06'))
+    S.write(bytes.fromhex('ff 02 08 2b 03'))
+# 转盘码垛二
+def arm_zp_md2():
+    S.write(bytes.fromhex('ff 01 08 18 00'))
+    S.write(bytes.fromhex('ff 01 09 14 00'))
+    S.write(bytes.fromhex('ff 01 0a 0a 00'))
+    S.write(bytes.fromhex('ff 02 08 bc 02'))
+    S.write(bytes.fromhex('ff 02 09 dc 05'))
+    S.write(bytes.fromhex('ff 02 0a fd 04'))
+# 转盘码垛三
+def arm_zp_md3():
+    S.write(bytes.fromhex('ff 01 08 18 00'))
+    S.write(bytes.fromhex('ff 01 09 14 00'))
+    S.write(bytes.fromhex('ff 01 0a 0a 00'))
+    S.write(bytes.fromhex('ff 02 08 b0 03'))
+    S.write(bytes.fromhex('ff 02 09 dc 05'))
+    S.write(bytes.fromhex('ff 02 0a fd 04'))
+    
+    
+
 ################################################################
 #颜色识别
 def ColorRecognition(color, img):
@@ -2199,13 +2259,13 @@ def grab_zp():
     time.sleep(0.5)
     if ys[2] == 'r':
         S.write(data13)
-        time.sleep(2.3)
+        time.sleep(3.3)
     elif ys[2] == 'g':
         S.write(data14)
-        time.sleep(2.6)
+        time.sleep(3.6)
     elif ys[2] == 'b':
         S.write(data15)
-        time.sleep(3.2)
+        time.sleep(4.2)
     arm_initialize()
 # 初赛第二次抓转盘
 def grab_zp_2():
@@ -2276,13 +2336,13 @@ def grab_zp_2():
     time.sleep(0.5)
     if ys[5] == 'r':
         S.write(data13)
-        time.sleep(2.3)
+        time.sleep(3.3)
     elif ys[5] == 'g':
         S.write(data14)
-        time.sleep(2.6)
+        time.sleep(3.6)
     elif ys[5] == 'b':
         S.write(data15)
-        time.sleep(3.2)
+        time.sleep(4.2)
     arm_initialize()
 ################################################################
 # 初赛第一次粗加工打靶并抓取
@@ -2290,33 +2350,33 @@ def arm_cjg():
     #######第1个物料#######
     if ys[0] == 'r':
         S.write(data12)
-        time.sleep(4.1)
+        time.sleep(4.2)
     elif ys[0] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[0] == 'b':
         S.write(data10)
-        time.sleep(4.5)
+        time.sleep(4.6)
     #######第2个物料#######
     if ys[1] == 'r':
         S.write(data12)
-        time.sleep(4.1)
+        time.sleep(4.2)
     elif ys[1] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[1] == 'b':
         S.write(data10)
-        time.sleep(4.5)
+        time.sleep(4.6)
     #######第3个物料#######
     if ys[2] == 'r':
         S.write(data12)
-        time.sleep(4.1)
+        time.sleep(4.2)
     elif ys[2] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[2] == 'b':
         S.write(data10)
-        time.sleep(4.5)
+        time.sleep(4.6)
         
     #######第1个物料#######
     if ys[0] == 'r':
@@ -2354,33 +2414,33 @@ def arm_cjg_2():
     #######第1个物料#######
     if ys[3] == 'r':
         S.write(data12)
-        time.sleep(4.1)
+        time.sleep(4.2)
     elif ys[3] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[3] == 'b':
         S.write(data10)
-        time.sleep(4.5)
+        time.sleep(4.6)
     #######第2个物料#######
     if ys[4] == 'r':
         S.write(data12)
-        time.sleep(4.1)
+        time.sleep(4.2)
     elif ys[4] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[4] == 'b':
         S.write(data10)
-        time.sleep(4.5)
+        time.sleep(4.6)
     #######第3个物料#######
     if ys[5] == 'r':
         S.write(data12)
-        time.sleep(4.1)
+        time.sleep(4.2)
     elif ys[5] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[5] == 'b':
         S.write(data10)
-        time.sleep(4.5)
+        time.sleep(4.6)
         
     #######第1个物料#######
     if ys[3] == 'r':
@@ -2917,7 +2977,7 @@ def arm_cpq_2():
                     break
             elif ys[3] == 'r':
                 _, _, k = getPos_9(ys[3])
-                if k < 2000000:
+                if k < 4000000:
                     break
             elif ys[3] == 'g':
                 _, _, k = getPos_9(ys[3])
@@ -2953,7 +3013,7 @@ def arm_cpq_2():
                     break
             elif ys[4] == 'r':
                 _, _, k = getPos_9(ys[4])
-                if k < 3000000:
+                if k < 4000000:
                     break
             elif ys[4] == 'g':
                 _, _, k = getPos_9(ys[4])
@@ -2989,7 +3049,7 @@ def arm_cpq_2():
                     break
             elif ys[5] == 'r':
                 _, _, k = getPos_9(ys[5])
-                if k < 2500000:
+                if k < 4000000:
                     break
             elif ys[5] == 'g':
                 _, _, k = getPos_9(ys[5])
@@ -3084,24 +3144,12 @@ result = cv2.matchTemplate(mask, template_zcq, cv2.TM_CCOEFF_NORMED)
 zcq2_x, zcq2_y = maxLoc
 print('zcq2: ', maxLoc)
 ################################################################
-order = cv2.imread('pic/pic_sample/order.jpg')
-temp_hsv = cv2.cvtColor(order, cv2.COLOR_BGR2HSV)
-h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 20, 34)
-s_mask = cv2.inRange(s, 48, 255)
-v_mask = cv2.inRange(v, 48, 255)
-mask = h_mask & s_mask & v_mask
-result = cv2.matchTemplate(mask, template_order, cv2.TM_CCOEFF_NORMED)
-(minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
-order_x, order_y = maxLoc
-print('order: ', maxLoc)
-################################################################
 first_level = cv2.imread('pic/pic_sample/1_level.jpg')
 temp_hsv = cv2.cvtColor(first_level, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 45, 80)
-s_mask = cv2.inRange(s, 60, 255)
-v_mask = cv2.inRange(v, 60, 255)
+h_mask = cv2.inRange(h, 56, 77)
+s_mask = cv2.inRange(s, 43, 255)
+v_mask = cv2.inRange(v, 46, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_1_level, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -3110,15 +3158,13 @@ print('first_level: ', maxLoc)
 ################################################################
 second_level = cv2.imread('pic/pic_sample/2_level.jpg')
 temp_hsv = cv2.cvtColor(second_level, cv2.COLOR_BGR2HSV)
-h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 45, 80)
-s_mask = cv2.inRange(s, 60, 255)
-v_mask = cv2.inRange(v, 60, 255)
+h_mask = cv2.inRange(h, 56, 77)
+s_mask = cv2.inRange(s, 43, 255)
+v_mask = cv2.inRange(v, 46, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_2_level, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
 second_level_x, second_level_y = maxLoc
-second_level_x, second_level_y = second_level_x+5, second_level_y-5
 print('second_level: ', maxLoc)
 ################################################################
 pin_init()
@@ -3351,7 +3397,7 @@ while True:
             elif a == 0:
                 print('exit chusai')
                 break
-    elif a == 2: # 决赛
+    elif a == 2: # 决赛    
         print('jue sai')
         arm_initialize()
         while True:
@@ -3415,7 +3461,7 @@ while True:
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
                         start_z = second_z
-                        MoveTime('f', 2.30)
+                        MoveTime('f', 2.17)
                         MoveTime('hj_2', 1.2)
                         ToAngle_Plus(third_z)
                         global_value.set_value('model', 0)
@@ -3431,8 +3477,8 @@ while True:
                         center = (width/2, height/2)
                         rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=45, scale=1)
                         rotated_temp = cv2.warpAffine(src=Order_temp, M=rotate_matrix, dsize=(width, height))
-                        order1_pic = rotated_temp[50:210, :]
-                        order2_pic = rotated_temp[210:, :]
+                        order1_pic = rotated_temp[50:230, :]
+                        order2_pic = rotated_temp[230:, :]
 
                         cv2.imwrite('pic/order.jpg', Order_temp)
                         cv2.imwrite('pic/order1.jpg', order1_pic)
@@ -3455,7 +3501,7 @@ while True:
                         ###################################
                         # 抓完物料去精加工区
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.1)
+                        MoveTime('b', 1.18)
                         MoveTime('back_zp', 1.0)
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
@@ -3489,11 +3535,13 @@ while True:
                         ###################################
                         # 定位转盘
                         global_value.set_value('model',1)
+                        grab_see()
+                        time.sleep(0.5)
                         arm_aim_turntable()
                         ToAngle_adjust(first_z)
-                        adjust_zp_1(zp_x, zp_y) #定位
+                        adjust_zp_2(zp_x, zp_y) #定位
                         ToAngle_adjust(first_z)
-                        adjust_zp_1(zp_x, zp_y) #定位
+                        adjust_zp_2(zp_x, zp_y) #定位
                         OpenDownLight()
                         ###################################
                         # 打靶成品区
@@ -3507,20 +3555,22 @@ while True:
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
                         start_z = second_z
-                        MoveTime('f', 2.25)
+                        MoveTime('f', 2.33)
                         MoveTime('cm', 1.0)
                         ToAngle_Plus(third_z)
                         global_value.set_value('model', 0)
                         start_z = third_z
-                        MoveTime('f', 1.3)
+                        MoveTime('f', 1.2)
                         ###################################
                         # 定位暂存区
                         OpenLight()
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_see_wl()
+                        ToAngle_adjust(third_z)
                         adjust_jjg_2(second_level_x, second_level_y, list(order2.keys())[1])
                         ToAngle_adjust(third_z)
+                        adjust_jjg_2(second_level_x, second_level_y, list(order2.keys())[1])
                         CloseLight()
                         ###################################
                         # 取二层物料
@@ -3528,7 +3578,7 @@ while True:
                         ###################################
                         # 抓完物料去精加工区
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.1)
+                        MoveTime('b', 1.2)
                         MoveTime('back_zp', 1.0)
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
@@ -3562,11 +3612,13 @@ while True:
                         ###################################
                         # 定位转盘
                         global_value.set_value('model',1)
+                        grab_see()
+                        time.sleep(0.5)
                         arm_aim_turntable()
                         ToAngle_adjust(first_z)
-                        adjust_zp_1(zp_x, zp_y) #定位
+                        adjust_zp_2(zp_x, zp_y) #定位
                         ToAngle_adjust(first_z)
-                        adjust_zp_1(zp_x, zp_y) #定位
+                        adjust_zp_2(zp_x, zp_y) #定位
                         OpenDownLight()
                         ###################################
                         # 打靶成品区
@@ -3575,7 +3627,7 @@ while True:
                         # 回家
                         CloseLight()
                         global_value.set_value('model',0)
-                        MoveTime('b', 2.2)
+                        MoveTime('b', 2.25)
                         MoveTime('hj_3', 1.0)
             elif a == 0:
                 print('exit juesai')
@@ -3672,6 +3724,7 @@ while True:
             elif a == 2:
                 flag = 3
                 grab_see()
+                OpenDownLight()
                 temp = global_value.get_value('frame_up')
                 cv2.imwrite('pic/pic_sample/zp_bullseye.jpg', temp)
             elif a == 3:
@@ -3687,11 +3740,11 @@ while True:
             elif a == 9:
                 arm_zp3()
             elif a == 17:
-                S.write(data15)
+                S.write(data7)
             elif a == 18:
-                S.write(data14)
+                S.write(data8)
             elif a == 19:
-                S.write(data13)
+                S.write(data9)
             elif a == 16:  #back
                 CloseLight()
                 print('exit zp_sample')
@@ -3733,12 +3786,16 @@ while True:
                     pass
             elif mes == b'light':
                 OpenLight()
+            elif mes == b'stop':
+                arm_stop()
+            elif mes == b'continue':
+                arm_recover()
             if a == 0:
                 arm_initialize()
             elif a == 1:
                 arm_grab()
             elif a == 2:
-                cv2.imwrite('pic/pic_sample/jjg.jpg', temp)
+                cv2.imwrite('pic/pic_sample/jjg.jpg', global_value.get_value('frame_up'))
             elif a == 3:
                 arm_losse()
             elif a == 4:
@@ -3806,6 +3863,10 @@ while True:
                     pass
             elif mes == b'light':
                 OpenLight()
+            elif mes == b'stop':
+                arm_stop()
+            elif mes == b'continue':
+                arm_recover()
             if a == 0:
                 arm_initialize()
             elif a == 1:
