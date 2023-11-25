@@ -25,7 +25,8 @@ i_order_flag = 1
 # GPIO5  = RXD3 -> ttyAMA2
 # GPIO9  = RXD4 -> ttyAMA3
 # GPIO13 = RXD5 -> ttyAMA4
-S = serial.Serial("/dev/ttyAMA0", 9600, bytesize=8, stopbits=1, timeout=0.5) #设置机械臂串口
+# S = serial.Serial("/dev/ttyAMA0", 9600, bytesize=8, stopbits=1, timeout=0.5) #设置机械臂串口
+S = serial.Serial("/dev/ttyUSB0", 9600, bytesize=8, stopbits=1, timeout=0.5) #设置机械臂串口
 pm = serial.Serial("/dev/ttyAMA3", 9600, timeout=0.1) #设置屏幕串口
 MCU = serial.Serial("/dev/ttyAMA1", baudrate=230400) #设置高精度陀螺仪串口
 qrCodeDetector = cv2.QRCodeDetector() #设置扫码实例
@@ -381,7 +382,7 @@ def ToAngle_little(angle):
         time.sleep(0.1)
         # 超出5秒退出循环
         t2 = time.time()
-        if t2 - t1 > 0.5:
+        if t2 - t1 > 1:
             break
 
         current_angle = get_angle(2)
@@ -601,41 +602,41 @@ def MoveTime(dir, t):
         t1 = t2 = time.time()
         global_value.set_value('targetA', speed_r)
         global_value.set_value('targetB', speed_l)
-        global_value.set_value('targetC', speed_r)
-        global_value.set_value('targetD', speed_l)
+        global_value.set_value('targetC', speed_l)
+        global_value.set_value('targetD', speed_r)
         while t2 -t1 < t:
             t2 = time.time()
             time.sleep(0.1)
             if get_angle(2) - start_z < -2: #向右偏
                 # print('r2')
-                global_value.set_value('targetA', speed_r*1.07)
-                global_value.set_value('targetB', speed_l*0.93)
-                global_value.set_value('targetC', speed_r*0.93)
-                global_value.set_value('targetD', speed_l*1.07)
+                global_value.set_value('targetA', speed_r*1.05)
+                global_value.set_value('targetB', speed_l*0.95)
+                global_value.set_value('targetC', speed_l*0.95)
+                global_value.set_value('targetD', speed_r*1.05)
             elif get_angle(2) - start_z < -1: #向右偏
                 # print('r1')
-                global_value.set_value('targetA', speed_r*1.07)
-                global_value.set_value('targetB', speed_l*0.93)
-                global_value.set_value('targetC', speed_r)
-                global_value.set_value('targetD', speed_l)
+                global_value.set_value('targetA', speed_r*1.05)
+                global_value.set_value('targetB', speed_l*0.95)
+                global_value.set_value('targetC', speed_l)
+                global_value.set_value('targetD', speed_r)
             elif get_angle(2) - start_z > 2: #向左偏
                 # print('l2')
-                global_value.set_value('targetA', speed_r*0.93)
-                global_value.set_value('targetB', speed_l*1.07)
-                global_value.set_value('targetC', speed_r*1.07)
-                global_value.set_value('targetD', speed_l*0.93)
+                global_value.set_value('targetA', speed_r*0.95)
+                global_value.set_value('targetB', speed_l*1.05)
+                global_value.set_value('targetC', speed_l*1.05)
+                global_value.set_value('targetD', speed_r*0.95)
             elif get_angle(2) - start_z > 1: #向左偏
                 # print('l1')
-                global_value.set_value('targetA', speed_r*0.93)
-                global_value.set_value('targetB', speed_l*1.07)
-                global_value.set_value('targetC', speed_r)
-                global_value.set_value('targetD', speed_l)
+                global_value.set_value('targetA', speed_r*0.95)
+                global_value.set_value('targetB', speed_l*1.05)
+                global_value.set_value('targetC', speed_l)
+                global_value.set_value('targetD', speed_r)
             else:
                 # print('0')
                 global_value.set_value('targetA', speed_r)
                 global_value.set_value('targetB', speed_l)
-                global_value.set_value('targetC', speed_r)
-                global_value.set_value('targetD', speed_l)
+                global_value.set_value('targetC', speed_l)
+                global_value.set_value('targetD', speed_r)
             # print(get_angle(2),'A: ', global_value.get_value('motorA'), 'B: ', global_value.get_value('motorB'), 'C: ', global_value.get_value('motorC'), 'D: ', global_value.get_value('motorD'))
         global_value.set_value('targetA', 0)
         global_value.set_value('targetB', 0)
@@ -643,7 +644,7 @@ def MoveTime(dir, t):
         global_value.set_value('targetD', 0)
     elif dir == 'b':
         move('back')
-        speed_l = 82
+        speed_l = 88
         speed_r = 78
         t1 = t2 = time.time()
         global_value.set_value('targetA', speed_r)
@@ -1164,24 +1165,24 @@ def MoveTime(dir, t):
             t2 = time.time()
             time.sleep(0.1)
             if get_angle(2) - start_z < -2: #向右偏
-                global_value.set_value('targetA', speed*1.25)
-                global_value.set_value('targetB', 0)
-                global_value.set_value('targetC', speed*0.75)
-                global_value.set_value('targetD', 0)
-            elif get_angle(2) - start_z < -1: #向右偏
-                global_value.set_value('targetA', speed*1.25)
-                global_value.set_value('targetB', 0)
-                global_value.set_value('targetC', speed)
-                global_value.set_value('targetD', 0)
-            elif get_angle(2) - start_z > 2: #向左偏
                 global_value.set_value('targetA', speed*0.75)
                 global_value.set_value('targetB', 0)
                 global_value.set_value('targetC', speed*1.25)
                 global_value.set_value('targetD', 0)
-            elif get_angle(2) - start_z > 1: #向左偏
+            elif get_angle(2) - start_z < -1: #向右偏
                 global_value.set_value('targetA', speed)
                 global_value.set_value('targetB', 0)
                 global_value.set_value('targetC', speed*1.25)
+                global_value.set_value('targetD', 0)
+            elif get_angle(2) - start_z > 2: #向左偏
+                global_value.set_value('targetA', speed*1.25)
+                global_value.set_value('targetB', 0)
+                global_value.set_value('targetC', speed*0.75)
+                global_value.set_value('targetD', 0)
+            elif get_angle(2) - start_z > 1: #向左偏
+                global_value.set_value('targetA', speed*1.25)
+                global_value.set_value('targetB', 0)
+                global_value.set_value('targetC', speed)
                 global_value.set_value('targetD', 0)
             else:
                 global_value.set_value('targetA', speed)
@@ -1357,7 +1358,7 @@ def getPos_6(color): #转盘打靶识别物料位置
     center = (width/2, height/2)
     rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=45, scale=1)
     rotated_temp = cv2.warpAffine(src=temp, M=rotate_matrix, dsize=(width, height))
-    rotated_temp = rotated_temp[140:340]
+    rotated_temp = rotated_temp[170:340]
     temp_hsv = cv2.cvtColor(rotated_temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
     if color == 'r':
@@ -1415,7 +1416,7 @@ def getPos_7(color): #转盘打靶识别静止或运动
     center = (width/2, height/2)
     rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=45, scale=1)
     rotated_temp = cv2.warpAffine(src=temp, M=rotate_matrix, dsize=(width, height))
-    rotated_temp = rotated_temp[140:-1]
+    rotated_temp = rotated_temp[170:-1]
     temp_hsv = cv2.cvtColor(rotated_temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
     if color == 'r':
@@ -1610,23 +1611,23 @@ def adjust_cjg_2(X, Y):
     x, y = getPos_2()
     t1 = t2 = time.time()
     global_value.set_value('model', 1)
-    while (X-5 < x < X+5 and Y-5 < y < Y+5) is not True:
+    while (X-2 < x < X+2 and Y-2 < y < Y+2) is not True:
         t2 = time.time()
         x, y = getPos_2()
         time.sleep(0.2)
-        if y > Y+5:
+        if y > Y+2:
             Y_decrease((y-Y)*k)
             time.sleep(0.2)
-        if y < Y-5:
+        if y < Y-2:
             Y_increase((Y-y)*k)
             time.sleep(0.2)
-        if x < X-5:
+        if x < X-2:
             X_increase((X-x)*k)
             time.sleep(0.2)
-        if x > X+5:
+        if x > X+2:
             X_decrease((x-X)*k)
             time.sleep(0.2)
-        if t2 - t1 > 5:
+        if t2 - t1 > 8:
             break
         pic_name = 'pic/adjust_sample/cjg/cjg_2_' + str(i) +'.jpg'
         i += 1
@@ -1737,25 +1738,25 @@ def adjust_order(X, Y):
     print('order: ', getPos_4())
 ################################################################
 def adjust_jjg_1(X, Y, ys):
-    k = 0.15
+    k = 0.3
     i = 1
     x, y = getPos_5(ys)
     t1 = t2 = time.time()
     global_value.set_value('model', 1)
-    while (X-7 < x < X+7 and Y-7 < y < Y+7) is not True:
+    while (X-10 < x < X+10 and Y-10 < y < Y+10) is not True:
         t2 = time.time()
         x, y = getPos_5(ys)
         time.sleep(0.2)
-        if y > Y+7:
+        if y > Y+10:
             Y_decrease((y-Y)*k)
             time.sleep(0.2)
-        if y < Y-7:
+        if y < Y-10:
             Y_increase((Y-y)*k)
             time.sleep(0.2)
-        if x < X-7:
+        if x < X-10:
             X_increase((X-x)*k)
             time.sleep(0.2)
-        if x > X+7:
+        if x > X+10:
             X_decrease((x-X)*k)
             time.sleep(0.2)
         if t2 - t1 > 5:
@@ -1770,25 +1771,25 @@ def adjust_jjg_1(X, Y, ys):
     print('jjg: ', getPos_5(ys))
 ################################################################
 def adjust_jjg_2(X, Y, ys):
-    k = 0.15
+    k = 0.25
     i = 1
     x, y = getPos_8(ys)
     t1 = t2 = time.time()
     global_value.set_value('model', 1)
-    while (X-7 < x < X+7 and Y-7 < y < Y+7) is not True:
+    while (X-10 < x < X+10 and Y-10 < y < Y+10) is not True:
         t2 = time.time()
         x, y = getPos_8(ys)
         time.sleep(0.2)
-        if y > Y+7:
+        if y > Y+10:
             Y_decrease((y-Y)*k)
             time.sleep(0.2)
-        if y < Y-7:
+        if y < Y-10:
             Y_increase((Y-y)*k)
             time.sleep(0.2)
-        if x < X-7:
+        if x < X-10:
             X_increase((X-x)*k)
             time.sleep(0.2)
-        if x > X+7:
+        if x > X+10:
             X_decrease((x-X)*k)
             time.sleep(0.2)
         if t2 - t1 > 5:
@@ -1934,6 +1935,7 @@ def first_level_1():
     S.write(bytes.fromhex('ff 02 09 e7 04'))
     S.write(bytes.fromhex('ff 01 0a 18 00'))
     S.write(bytes.fromhex('ff 02 0a 8d 07'))
+    S.write(bytes.fromhex('ff 02 0b 8e 04'))
 def first_level_2():
     S.write(bytes.fromhex('ff 01 08 18 00'))
     S.write(bytes.fromhex('ff 02 08 41 03'))
@@ -1941,6 +1943,7 @@ def first_level_2():
     S.write(bytes.fromhex('ff 02 09 61 05'))
     S.write(bytes.fromhex('ff 01 0a 18 00'))
     S.write(bytes.fromhex('ff 02 0a d0 07'))
+    S.write(bytes.fromhex('ff 02 0b 8e 04'))
 def first_level_3():
     S.write(bytes.fromhex('ff 01 08 18 00'))
     S.write(bytes.fromhex('ff 02 08 14 04'))
@@ -1948,6 +1951,7 @@ def first_level_3():
     S.write(bytes.fromhex('ff 02 09 f2 04'))
     S.write(bytes.fromhex('ff 01 0a 18 00'))
     S.write(bytes.fromhex('ff 02 0a 82 07'))
+    S.write(bytes.fromhex('ff 02 0b 8e 04'))
 # 二层抓取
 def second_level_1():
     S.write(bytes.fromhex('ff 01 08 18 00'))
@@ -1956,6 +1960,7 @@ def second_level_1():
     S.write(bytes.fromhex('ff 02 09 1f 04'))
     S.write(bytes.fromhex('ff 01 0a 18 00'))
     S.write(bytes.fromhex('ff 02 0a 34 06'))
+    S.write(bytes.fromhex('ff 02 0b 8e 04'))
 def second_level_2():
     S.write(bytes.fromhex('ff 01 08 18 00'))
     S.write(bytes.fromhex('ff 02 08 4c 03'))
@@ -1963,6 +1968,7 @@ def second_level_2():
     S.write(bytes.fromhex('ff 02 09 8e 04'))
     S.write(bytes.fromhex('ff 01 0a 18 00'))
     S.write(bytes.fromhex('ff 02 0a 6c 06'))
+    S.write(bytes.fromhex('ff 02 0b 8e 04'))
 def second_level_3():
     S.write(bytes.fromhex('ff 01 08 18 00'))
     S.write(bytes.fromhex('ff 02 08 d1 03'))
@@ -1970,6 +1976,7 @@ def second_level_3():
     S.write(bytes.fromhex('ff 02 09 1f 04'))
     S.write(bytes.fromhex('ff 01 0a 18 00'))
     S.write(bytes.fromhex('ff 02 0a 34 06'))
+    S.write(bytes.fromhex('ff 02 0b 8e 04'))
 # 机械臂暂停
 def arm_stop():
     S.write(bytes.fromhex('ff 0b 00 01 00'))
@@ -2283,129 +2290,129 @@ def arm_cjg():
     #######第1个物料#######
     if ys[0] == 'r':
         S.write(data12)
-        time.sleep(3.8)
+        time.sleep(4.1)
     elif ys[0] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[0] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
     #######第2个物料#######
     if ys[1] == 'r':
         S.write(data12)
-        time.sleep(3.8)
+        time.sleep(4.1)
     elif ys[1] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[1] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
     #######第3个物料#######
     if ys[2] == 'r':
         S.write(data12)
-        time.sleep(3.8)
+        time.sleep(4.1)
     elif ys[2] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[2] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
         
     #######第1个物料#######
     if ys[0] == 'r':
         S.write(data7)
-        time.sleep(3.6)
+        time.sleep(3.8)
     elif ys[0] == 'g':
         S.write(data8)
-        time.sleep(3.8)
+        time.sleep(4.1)
     elif ys[0] == 'b':
         S.write(data9)
-        time.sleep(3.9)
+        time.sleep(4.25)
     #######第2个物料#######
     if ys[1] == 'r':
         S.write(data7)
-        time.sleep(3.6)
+        time.sleep(3.8)
     elif ys[1] == 'g':
         S.write(data8)
-        time.sleep(3.8)
+        time.sleep(4.1)
     elif ys[1] == 'b':
         S.write(data9)
-        time.sleep(3.9)
+        time.sleep(4.25)
     #######第3个物料#######
     if ys[2] == 'r':
         S.write(data7)
-        time.sleep(3.0)
+        time.sleep(3.8)
     elif ys[2] == 'g':
         S.write(data8)
-        time.sleep(3.2)
+        time.sleep(4.1)
     elif ys[2] == 'b':
         S.write(data9)
-        time.sleep(3.3)
+        time.sleep(4.25)
     arm_initialize()  
 # 初赛第二次粗加工打靶并抓取
 def arm_cjg_2():
     #######第1个物料#######
     if ys[3] == 'r':
         S.write(data12)
-        time.sleep(4.0)
+        time.sleep(4.1)
     elif ys[3] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[3] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
     #######第2个物料#######
     if ys[4] == 'r':
         S.write(data12)
-        time.sleep(4.0)
+        time.sleep(4.1)
     elif ys[4] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[4] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
     #######第3个物料#######
     if ys[5] == 'r':
         S.write(data12)
-        time.sleep(4.0)
+        time.sleep(4.1)
     elif ys[5] == 'g':
         S.write(data11)
         time.sleep(4.3)
     elif ys[5] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
         
     #######第1个物料#######
     if ys[3] == 'r':
         S.write(data7)
-        time.sleep(3.6)
+        time.sleep(3.8)
     elif ys[3] == 'g':
         S.write(data8)
-        time.sleep(3.8)
+        time.sleep(4.1)
     elif ys[3] == 'b':
         S.write(data9)
-        time.sleep(3.9)
+        time.sleep(4.25)
     #######第2个物料#######
     if ys[4] == 'r':
         S.write(data7)
-        time.sleep(3.6)
+        time.sleep(3.8)
     elif ys[4] == 'g':
         S.write(data8)
-        time.sleep(3.8)
+        time.sleep(4.1)
     elif ys[4] == 'b':
         S.write(data9)
-        time.sleep(3.9)
+        time.sleep(4.25)
     #######第3个物料#######
     if ys[5] == 'r':
         S.write(data7)
-        time.sleep(3.0)
+        time.sleep(3.8)
     elif ys[5] == 'g':
         S.write(data8)
-        time.sleep(3.2)
+        time.sleep(4.1)
     elif ys[5] == 'b':
         S.write(data9)
-        time.sleep(3.3)
-    arm_initialize()  
+        time.sleep(4.25)
+    arm_initialize()   
 ################################################################
 # 初赛第一次暂存区打靶
 def arm_zcq():
@@ -2630,33 +2637,33 @@ def arm_jjg_1():
     #######第1个物料#######
     if ys[0] == 'r':
         S.write(data12)
-        time.sleep(3.8)
+        time.sleep(4.2)
     elif ys[0] == 'g':
         S.write(data11)
-        time.sleep(4.3)
+        time.sleep(4.6)
     elif ys[0] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
     #######第2个物料#######
     if ys[1] == 'r':
         S.write(data12)
-        time.sleep(3.8)
+        time.sleep(4.2)
     elif ys[1] == 'g':
         S.write(data11)
-        time.sleep(4.3)
+        time.sleep(4.6)
     elif ys[1] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
     #######第3个物料#######
     if ys[2] == 'r':
         S.write(data12)
-        time.sleep(3.8)
+        time.sleep(4.2)
     elif ys[2] == 'g':
         S.write(data11)
-        time.sleep(4.3)
+        time.sleep(4.6)
     elif ys[2] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
         
     arm_see_wl()
     time.sleep(0.5)
@@ -2715,33 +2722,33 @@ def arm_jjg_2():
     #######第1个物料#######
     if ys[3] == 'r':
         S.write(data12)
-        time.sleep(3.8)
+        time.sleep(4.2)
     elif ys[3] == 'g':
         S.write(data11)
-        time.sleep(4.3)
+        time.sleep(4.6)
     elif ys[3] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
     #######第2个物料#######
     if ys[4] == 'r':
         S.write(data12)
-        time.sleep(3.8)
+        time.sleep(4.2)
     elif ys[4] == 'g':
         S.write(data11)
-        time.sleep(4.3)
+        time.sleep(4.6)
     elif ys[4] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
     #######第3个物料#######
     if ys[5] == 'r':
         S.write(data12)
-        time.sleep(3.8)
+        time.sleep(4.2)
     elif ys[5] == 'g':
         S.write(data11)
-        time.sleep(4.3)
+        time.sleep(4.6)
     elif ys[5] == 'b':
         S.write(data10)
-        time.sleep(4.4)
+        time.sleep(4.5)
         
     arm_see_wl()
     time.sleep(0.5)
@@ -2812,9 +2819,9 @@ def MoveOrStatic_2(color):
     x1, y1 = getPos_7(color)
     frame2 = global_value.get_value('frame')
     x2, y2 = getPos_7(color)
-    if abs(x2-x1) + abs(y2-y1) >= 3:
+    if abs(x2-x1) + abs(y2-y1) >= 2:
         return 'move'   #move
-    elif abs(x2-x1) + abs(y2-y1) < 3:
+    elif abs(x2-x1) + abs(y2-y1) < 2:
         return 'static'   #static
 ################################################################
 def arm_cpq_1():
@@ -2903,7 +2910,7 @@ def arm_cpq_2():
         S.write(data13)
         time.sleep(2.8)
     while 1:
-        if MoveOrStatic_2('r') == 'static':
+        if MoveOrStatic_2(ys[3]) == 'static':
             if ys[3] == 'b':
                 _, _, k = getPos_9(ys[3])
                 if k < 1000000:
@@ -2939,14 +2946,14 @@ def arm_cpq_2():
         S.write(data13)
         time.sleep(2.8)
     while 1:
-        if MoveOrStatic_2('r') == 'static':
+        if MoveOrStatic_2(ys[4]) == 'static':
             if ys[4] == 'b':
                 _, _, k = getPos_9(ys[4])
                 if k < 1000000:
                     break
             elif ys[4] == 'r':
                 _, _, k = getPos_9(ys[4])
-                if k < 2000000:
+                if k < 3000000:
                     break
             elif ys[4] == 'g':
                 _, _, k = getPos_9(ys[4])
@@ -2975,7 +2982,7 @@ def arm_cpq_2():
         S.write(data13)
         time.sleep(2.8)
     while 1:
-        if MoveOrStatic_2('r') == 'static':
+        if MoveOrStatic_2(ys[5]) == 'static':
             if ys[5] == 'b':
                 _, _, k = getPos_9(ys[5])
                 if k < 1000000:
@@ -3038,10 +3045,20 @@ v_mask = cv2.inRange(v, 25, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
-# cjg_x, cjg_y = maxLoc
-cjg_x, cjg_y = 200, 150
-jjg_x, jjg_y = 205, 165
+cjg_x, cjg_y = maxLoc
 print('cjg: ', maxLoc)
+################################################################
+cjg = cv2.imread('pic/pic_sample/jjg.jpg')
+temp_hsv = cv2.cvtColor(cjg, cv2.COLOR_BGR2HSV)
+h, s, v = cv2.split(temp_hsv)
+h_mask = cv2.inRange(h, 37, 60)
+s_mask = cv2.inRange(s, 25, 255)
+v_mask = cv2.inRange(v, 25, 255)
+mask = h_mask & s_mask & v_mask
+result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
+(minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
+jjg_x, jjg_y = maxLoc
+print('jjg: ', maxLoc)
 ################################################################
 zcq1 = cv2.imread('pic/pic_sample/zcq1.jpg')
 temp_hsv = cv2.cvtColor(zcq1, cv2.COLOR_BGR2HSV)
@@ -3052,9 +3069,8 @@ v_mask = cv2.inRange(v, 46, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
-# zcq1_x, zcq1_y = maxLoc
-zcq1_x, zcq1_y = 200, 150
-print('zcq1: ', maxLoc)
+zcq1_x, zcq1_y = cjg_x, cjg_y
+print('zcq1: ', zcq1_x, zcq1_y)
 ################################################################
 zcq2 = cv2.imread('pic/pic_sample/zcq2.jpg')
 temp_hsv = cv2.cvtColor(zcq2, cv2.COLOR_BGR2HSV)
@@ -3197,7 +3213,7 @@ while True:
                         ###################################
                         # 抓完物料定位粗加工区
                         global_value.set_value('model', 0)
-                        MoveTime('f', 0.43)
+                        MoveTime('f', 0.40)
                         MoveTime('cm', 0.7)
                         ToAngle_Plus(second_z)
                         global_value.set_value('model',0)
@@ -3251,7 +3267,7 @@ while True:
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
                         start_z = second_z
-                        MoveTime('b', 2.32)
+                        MoveTime('b', 2.3)
                         MoveTime('back_zp', 1.0)
                         ToAngle_Plus(first_z)
                         global_value.set_value('model', 0)
@@ -3330,7 +3346,7 @@ while True:
                         ToAngle_Plus(fouth_z-2)
                         global_value.set_value('model', 0)
                         start_z = fouth_z-2
-                        MoveTime('f', 2.6)
+                        MoveTime('f', 2.8)
                         MoveTime('hj_2', 1.0)
             elif a == 0:
                 print('exit chusai')
@@ -3399,13 +3415,13 @@ while True:
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
                         start_z = second_z
-                        MoveTime('f', 2.32)
-                        MoveTime('hj_2', 0.8)
+                        MoveTime('f', 2.30)
+                        MoveTime('hj_2', 1.2)
                         ToAngle_Plus(third_z)
                         global_value.set_value('model', 0)
                         start_z = third_z
                         OpenLight()
-                        MoveTime('b', 1.5)
+                        MoveTime('b', 1.35)
                         arm_see_wl()
                         time.sleep(1)
                         ###################################
@@ -3430,10 +3446,8 @@ while True:
                         ###################################
                         # 对准暂存区
                         arm_aim_bullseye()
-                        ToAngle_adjust(third_z)
                         adjust_jjg_1(first_level_x, first_level_y, list(order1.keys())[1])
                         ToAngle_adjust(third_z)
-                        adjust_jjg_1(first_level_x, first_level_y, list(order1.keys())[1])
                         CloseLight()
                         ###################################
                         # 抓暂存区物料
@@ -3441,7 +3455,7 @@ while True:
                         ###################################
                         # 抓完物料去精加工区
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.2)
+                        MoveTime('b', 1.1)
                         MoveTime('back_zp', 1.0)
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
@@ -3464,8 +3478,8 @@ while True:
                         ###################################
                         # 打完靶后去转盘
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.3)
-                        MoveTime('back_zp', 1.0)
+                        MoveTime('b', 1.2)
+                        MoveTime('back_zp', 1.2)
                         ToAngle_Plus(first_z)
                         global_value.set_value('model', 0)
                         start_z = first_z
@@ -3493,22 +3507,20 @@ while True:
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
                         start_z = second_z
-                        MoveTime('f', 2.35)
+                        MoveTime('f', 2.25)
                         MoveTime('cm', 1.0)
                         ToAngle_Plus(third_z)
                         global_value.set_value('model', 0)
                         start_z = third_z
-                        MoveTime('f', 1.1)
+                        MoveTime('f', 1.3)
                         ###################################
                         # 定位暂存区
                         OpenLight()
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_see_wl()
+                        adjust_jjg_2(second_level_x, second_level_y, list(order2.keys())[1])
                         ToAngle_adjust(third_z)
-                        adjust_jjg_1(first_level_x, first_level_y, list(order2.keys())[1])
-                        ToAngle_adjust(third_z)
-                        adjust_jjg_1(first_level_x, first_level_y, list(order2.keys())[1])
                         CloseLight()
                         ###################################
                         # 取二层物料
@@ -3516,7 +3528,7 @@ while True:
                         ###################################
                         # 抓完物料去精加工区
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.2)
+                        MoveTime('b', 1.1)
                         MoveTime('back_zp', 1.0)
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
@@ -3539,8 +3551,8 @@ while True:
                         ###################################
                         # 打完靶后去转盘
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.3)
-                        MoveTime('back_zp', 1.0)
+                        MoveTime('b', 1.2)
+                        MoveTime('back_zp', 1.2)
                         ToAngle_Plus(first_z)
                         global_value.set_value('model', 0)
                         start_z = first_z
@@ -3700,7 +3712,6 @@ while True:
                 temp_x, temp_y = getPos_2()
                 pos = '"'+str(temp_x)+','+str(temp_y)+'"'
                 mes = 't0.txt='+pos
-                print(MoveOrStatic_2)
                 pm.write(bytearray(mes.encode()))
                 pm.write(end)
             elif mes == b'zcq': #zcq
@@ -3709,7 +3720,6 @@ while True:
                 temp_x, temp_y = getPos_2()
                 pos = '"'+str(temp_x)+','+str(temp_y)+'"'
                 mes = 't0.txt='+pos
-                print(MoveOrStatic_2)
                 pm.write(bytearray(mes.encode()))
                 pm.write(end)
             elif mes == b'save':
@@ -3728,7 +3738,7 @@ while True:
             elif a == 1:
                 arm_grab()
             elif a == 2:
-                arm_interim()
+                cv2.imwrite('pic/pic_sample/jjg.jpg', temp)
             elif a == 3:
                 arm_losse()
             elif a == 4:
