@@ -86,6 +86,7 @@ template_order_2 = cv2.imread('pic/template/template_order_2.jpg', cv2.IMREAD_GR
 template_1_level = cv2.imread('pic/template/template_1_level.jpg', cv2.IMREAD_GRAYSCALE)
 template_2_level = cv2.imread('pic/template/template_2_level.jpg', cv2.IMREAD_GRAYSCALE)
 template_zp_bullseye = cv2.imread('pic/template/template_zp_bullseye.jpg', cv2.IMREAD_GRAYSCALE)
+template_cpq_md = cv2.imread('pic/template/template_cpq_md.jpg', cv2.IMREAD_GRAYSCALE)
 ################################################################
 def OpenLight():
     GPIO.output(Light_up,1)
@@ -1352,7 +1353,7 @@ def getPos_5(color): # 暂存区取物料第一层
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
-def getPos_6(color): #转盘打靶识别物料位置
+def getPos_6(color): # 转盘打靶识别物料位置
     temp = global_value.get_value('frame_up')
     height, width = temp.shape[:2]
     center = (width/2, height/2)
@@ -1381,7 +1382,7 @@ def getPos_6(color): #转盘打靶识别物料位置
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
-def getPos_9(color): #第二次转盘打靶识别物料位置
+def getPos_9(color): # 判断成品区物料顺序
     temp = global_value.get_value('frame_up')
     height, width = temp.shape[:2]
     center = (width/2, height/2)
@@ -1392,25 +1393,36 @@ def getPos_9(color): #第二次转盘打靶识别物料位置
     h, s, v = cv2.split(temp_hsv)
     if color == 'r':
         h1_mask = cv2.inRange(h, 0, 15)
-        h2_mask = cv2.inRange(h, 178, 180)
+        h2_mask = cv2.inRange(h, 170, 180)
         s_mask = cv2.inRange(s, 43, 255)
         v_mask = cv2.inRange(v, 46, 255)
         mask = h1_mask & s_mask & v_mask | h2_mask
+        result = cv2.matchTemplate(mask, template_cpq_md, cv2.TM_CCOEFF_NORMED)
+        # result = cv2.matchTemplate(mask, template_zp_bullseye, cv2.TM_CCOEFF_NORMED)
+        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
+        x, y = maxLoc
+        return x, y, np.sum(mask)
     elif color == 'g':
-        h_mask = cv2.inRange(h, 30, 77)
+        h_mask = cv2.inRange(h, 35, 77)
         s_mask = cv2.inRange(s, 43, 255)
-        v_mask = cv2.inRange(v, 46, 255)
+        v_mask = cv2.inRange(v, 47, 255)
         mask = h_mask & s_mask & v_mask
+        result = cv2.matchTemplate(mask, template_cpq_md, cv2.TM_CCOEFF_NORMED)
+        # result = cv2.matchTemplate(mask, template_zp_bullseye, cv2.TM_CCOEFF_NORMED)
+        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
+        x, y = maxLoc
+        return x, y, np.sum(mask)
     elif color == 'b':
         h_mask = cv2.inRange(h, 77, 124)
-        s_mask = cv2.inRange(s, 43, 255)
-        v_mask = cv2.inRange(v, 46, 255)
+        s_mask = cv2.inRange(s, 20, 255)
+        v_mask = cv2.inRange(v, 20, 255)
         mask = h_mask & s_mask & v_mask
-    result = cv2.matchTemplate(mask, template_wl, cv2.TM_CCOEFF_NORMED)
-    (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
-    x, y = maxLoc
-    return x, y, np.sum(mask)
-def getPos_7(color): #转盘打靶识别静止或运动
+        result = cv2.matchTemplate(mask, template_cpq_md, cv2.TM_CCOEFF_NORMED)
+        # result = cv2.matchTemplate(mask, template_zp_bullseye, cv2.TM_CCOEFF_NORMED)
+        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
+        x, y = maxLoc
+        return x, y, np.sum(mask)
+def getPos_7(color): # 转盘第一次打靶识别静止或运动
     temp = global_value.get_value('frame_up')
     height, width = temp.shape[:2]
     center = (width/2, height/2)
@@ -1460,6 +1472,35 @@ def getPos_8(color): # 暂存区取物料第二层
         v_mask = cv2.inRange(v, 46, 255)
         mask = h_mask & s_mask & v_mask
     result = cv2.matchTemplate(mask, template_2_level, cv2.TM_CCOEFF_NORMED)
+    (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
+    x, y = maxLoc
+    return x, y
+def getPos_10(color):# 转盘第二次打靶识别静止或运动
+    temp = global_value.get_value('frame_up')
+    height, width = temp.shape[:2]
+    center = (width/2, height/2)
+    rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=45, scale=1)
+    rotated_temp = cv2.warpAffine(src=temp, M=rotate_matrix, dsize=(width, height))
+    rotated_temp = rotated_temp[180:-1]
+    temp_hsv = cv2.cvtColor(rotated_temp, cv2.COLOR_BGR2HSV)
+    h, s, v = cv2.split(temp_hsv)
+    if color == 'r':
+        h1_mask = cv2.inRange(h, 0, 15)
+        h2_mask = cv2.inRange(h, 170, 180)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
+        mask = h1_mask & s_mask & v_mask | h2_mask
+    elif color == 'g':
+        h_mask = cv2.inRange(h, 56, 77)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
+        mask = h_mask & s_mask & v_mask
+    elif color == 'b':
+        h_mask = cv2.inRange(h, 100, 124)
+        s_mask = cv2.inRange(s, 43, 255)
+        v_mask = cv2.inRange(v, 46, 255)
+        mask = h_mask & s_mask & v_mask
+    result = cv2.matchTemplate(mask, template_cpq_md, cv2.TM_CCOEFF_NORMED)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
     x, y = maxLoc
     return x, y
@@ -1889,7 +1930,7 @@ def arm_grab():
     S.write(bytes.fromhex('ff 01 0b 14 00'))
     S.write(bytes.fromhex('ff 02 0b fd 05'))
 # 放手动作
-def arm_losse():
+def arm_losses():
     S.write(bytes.fromhex('ff 01 0b 14 00'))
     S.write(bytes.fromhex('ff 02 0b 8e 04'))
 def arm_interim():
@@ -2074,9 +2115,6 @@ def arm_zp_md3():
     S.write(bytes.fromhex('ff 02 08 b0 03'))
     S.write(bytes.fromhex('ff 02 09 dc 05'))
     S.write(bytes.fromhex('ff 02 0a fd 04'))
-    
-    
-
 ################################################################
 #颜色识别
 def ColorRecognition(color, img):
@@ -2867,6 +2905,7 @@ def arm_jjg_2():
 def MoveOrStatic(color):
     frame1 = global_value.get_value('frame_up')
     x1, y1 = ColorRecognition(color, frame1)
+    time.sleep(0.1)
     frame2 = global_value.get_value('frame_up')
     x2, y2 = ColorRecognition(color, frame2)
     # return abs(x2-x1) + abs(y2-y1)
@@ -2874,11 +2913,18 @@ def MoveOrStatic(color):
         return 0   #move
     elif abs(x2-x1) + abs(y2-y1) < 2:
         return 1   #static
-def MoveOrStatic_2(color):
-    frame1 = global_value.get_value('frame')
+def MoveOrStatic_2(color):# 成品区一次打靶判断静止或移动
     x1, y1 = getPos_7(color)
-    frame2 = global_value.get_value('frame')
+    time.sleep(0.1)
     x2, y2 = getPos_7(color)
+    if abs(x2-x1) + abs(y2-y1) >= 2:
+        return 'move'   #move
+    elif abs(x2-x1) + abs(y2-y1) < 2:
+        return 'static'   #static
+def MoveOrStatic_3(color): # 成品区二次打靶判断静止或移动
+    x1, y1 = getPos_10(color)
+    time.sleep(0.1)
+    x2, y2 = getPos_10(color)
     if abs(x2-x1) + abs(y2-y1) >= 2:
         return 'move'   #move
     elif abs(x2-x1) + abs(y2-y1) < 2:
@@ -2969,28 +3015,28 @@ def arm_cpq_2():
     elif ys[3] == 'r':
         S.write(data13)
         time.sleep(2.8)
-    while 1:
-        if MoveOrStatic_2(ys[3]) == 'static':
-            if ys[3] == 'b':
-                _, _, k = getPos_9(ys[3])
-                if k < 1000000:
-                    break
-            elif ys[3] == 'r':
-                _, _, k = getPos_9(ys[3])
-                if k < 4000000:
-                    break
-            elif ys[3] == 'g':
-                _, _, k = getPos_9(ys[3])
-                if k < 2000000:
-                    break
+    while MoveOrStatic_3(ys[3]) == 'move' or (order_cpq[ys[3]] == 3 and getPos_9(ys[3])[2]>1000000):
+        pass
     cv2.imwrite('pic/adjust_sample/cpq/cpq2-1.jpg', global_value.get_value('frame_up'))
     order_cpq = get_order_cpq()
     if order_cpq[ys[3]] == 1:
-        S.write(data7)
-        time.sleep(1.3)
+        if getPos_9(ys[3])[2] < 1000000:
+            S.write(data7)
+            time.sleep(1.3)
+        else:
+            arm_cpq_2()
+            time.sleep(1)
+            arm_losses()
+            time.sleep(0.3)
     elif order_cpq[ys[3]] == 2:
-        S.write(data8)
-        time.sleep(1.3)
+        if getPos_9(ys[3])[2] < 1000000:
+            S.write(data8)
+            time.sleep(1.3)
+        else:
+            arm_cpq_1()
+            time.sleep(1)
+            arm_losses()
+            time.sleep(0.3)
     elif order_cpq[ys[3]] == 3:
         S.write(data9)
         time.sleep(1.3)
@@ -3005,28 +3051,28 @@ def arm_cpq_2():
     elif ys[4] == 'r':
         S.write(data13)
         time.sleep(2.8)
-    while 1:
-        if MoveOrStatic_2(ys[4]) == 'static':
-            if ys[4] == 'b':
-                _, _, k = getPos_9(ys[4])
-                if k < 1000000:
-                    break
-            elif ys[4] == 'r':
-                _, _, k = getPos_9(ys[4])
-                if k < 4000000:
-                    break
-            elif ys[4] == 'g':
-                _, _, k = getPos_9(ys[4])
-                if k < 2000000:
-                    break
+    while MoveOrStatic_3(ys[3]) == 'move' or (order_cpq[ys[4]] == 3 and getPos_9(ys[4])[2]>1000000):
+        pass
     cv2.imwrite('pic/adjust_sample/cpq/cpq2-2.jpg', global_value.get_value('frame_up'))
     order_cpq = get_order_cpq()
     if order_cpq[ys[4]] == 1:
-        S.write(data7)
-        time.sleep(1.3)
+        if getPos_9(ys[4])[2] < 1000000:
+            S.write(data7)
+            time.sleep(1.3)
+        else:
+            arm_cpq_2()
+            time.sleep(1)
+            arm_losses()
+            time.sleep(0.3)
     elif order_cpq[ys[4]] == 2:
-        S.write(data8)
-        time.sleep(1.3)
+        if getPos_9(ys[4])[2] < 1000000:
+            S.write(data8)
+            time.sleep(1.3)
+        else:
+            arm_cpq_1()
+            time.sleep(1)
+            arm_losses()
+            time.sleep(0.3)
     elif order_cpq[ys[4]] == 3:
         S.write(data9)
         time.sleep(1.3)
@@ -3041,31 +3087,31 @@ def arm_cpq_2():
     elif ys[5] == 'r':
         S.write(data13)
         time.sleep(2.8)
-    while 1:
-        if MoveOrStatic_2(ys[5]) == 'static':
-            if ys[5] == 'b':
-                _, _, k = getPos_9(ys[5])
-                if k < 1000000:
-                    break
-            elif ys[5] == 'r':
-                _, _, k = getPos_9(ys[5])
-                if k < 4000000:
-                    break
-            elif ys[5] == 'g':
-                _, _, k = getPos_9(ys[5])
-                if k < 2500000:
-                    break
+    while MoveOrStatic_3(ys[5]) == 'move' or (order_cpq[ys[5]] == 3 and getPos_9(ys[5])[2]>1000000):
+        pass
     cv2.imwrite('pic/adjust_sample/cpq/cpq2-3.jpg', global_value.get_value('frame_up'))
     order_cpq = get_order_cpq()
     if order_cpq[ys[5]] == 1:
-        S.write(data7)
-        time.sleep(1.4)
+        if getPos_9(ys[5])[2] < 1000000:
+            S.write(data7)
+            time.sleep(1.3)
+        else:
+            arm_cpq_2()
+            time.sleep(1)
+            arm_losses()
+            time.sleep(0.3)
     elif order_cpq[ys[5]] == 2:
-        S.write(data8)
-        time.sleep(1.4)
+        if getPos_9(ys[5])[2] < 1000000:
+            S.write(data8)
+            time.sleep(1.3)
+        else:
+            arm_cpq_1()
+            time.sleep(1)
+            arm_losses()
+            time.sleep(0.3)
     elif order_cpq[ys[5]] == 3:
         S.write(data9)
-        time.sleep(1.4)
+        time.sleep(1.3)
         
     arm_initialize()
 ################################################################
