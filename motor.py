@@ -8,7 +8,8 @@ import threading
 global_value._init()  #全局变量初始化，初始化字典
 pi = pigpio.pi()
 MCU = serial.Serial("/dev/ttyAMA1", baudrate=230400) #设置高精度陀螺仪串口
-
+pm = serial.Serial("/dev/ttyAMA3", 9600, timeout=0.1) #设置屏幕串口
+end = bytes.fromhex('ff ff ff')  #串口屏结束符
 key = 0    #陀螺仪函数的全局变量
 buff = {}  #陀螺仪函数的全局变量
 
@@ -206,6 +207,9 @@ def GetSpeed():
             # print(buff_data)
             for i in range(0, buff_count):
                 new_handleSerialData(buff_data[i])
+            # mes = 'angle.txt='+'"'+str(round(global_value.get_value('JD')[2]+180, 3))+'"'
+            # pm.write(bytearray(mes.encode()))
+            # pm.write(end)
             # print(global_value.get_value('JD'))
             # print("a:" ,global_value.get_value('motorA'), "  b:" ,global_value.get_value('motorB'), "  c:" ,global_value.get_value('motorC'),  "  d:" ,global_value.get_value('motorD'))
     except KeyboardInterrupt:
