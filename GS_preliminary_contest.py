@@ -697,7 +697,7 @@ def MoveTime(dir, t):
         global_value.set_value('targetD', 0)
     elif dir == 'b':
         move('back')
-        speed_l = 88
+        speed_l = 90 #实验室88
         speed_r = 78
         t1 = t2 = time.time()
         global_value.set_value('targetA', speed_r)
@@ -2410,13 +2410,13 @@ def grab_zp():
     time.sleep(0.5)
     if ys[0] == 'r':
         S.write(data13)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[0] == 'g':
         S.write(data14)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[0] == 'b':
         S.write(data15)
-        time.sleep(3.5)
+        time.sleep(3.6)
     #######第2个物料#######
     time.sleep(0.5)
     while MoveOrStatic(ys[1]) == 0:
@@ -2434,13 +2434,13 @@ def grab_zp():
     time.sleep(0.5)
     if ys[1] == 'r':
         S.write(data13)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[1] == 'g':
         S.write(data14)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[1] == 'b':
         S.write(data15)
-        time.sleep(3.5)
+        time.sleep(3.6)
     #######第3个物料#######
     time.sleep(0.5)
     while MoveOrStatic(ys[2]) == 0:
@@ -2458,13 +2458,13 @@ def grab_zp():
     time.sleep(0.5)
     if ys[2] == 'r':
         S.write(data13)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[2] == 'g':
         S.write(data14)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[2] == 'b':
         S.write(data15)
-        time.sleep(3.5)
+        time.sleep(3.6)
     arm_initialize()
     time.sleep(0.8)
 # 初赛第二次抓转盘
@@ -2488,13 +2488,13 @@ def grab_zp_2():
     time.sleep(0.5)
     if ys[3] == 'r':
         S.write(data13)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[3] == 'g':
         S.write(data14)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[3] == 'b':
         S.write(data15)
-        time.sleep(3.5)
+        time.sleep(3.6)
     #######第2个物料#######
     time.sleep(0.5)
     while MoveOrStatic(ys[4]) == 0:
@@ -2512,13 +2512,13 @@ def grab_zp_2():
     time.sleep(0.5)
     if ys[4] == 'r':
         S.write(data13)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[4] == 'g':
         S.write(data14)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[4] == 'b':
         S.write(data15)
-        time.sleep(3.5)
+        time.sleep(3.6)
     #######第3个物料#######
     time.sleep(0.5)
     while MoveOrStatic(ys[5]) == 0:
@@ -2536,14 +2536,15 @@ def grab_zp_2():
     time.sleep(0.5)
     if ys[5] == 'r':
         S.write(data13)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[5] == 'g':
         S.write(data14)
-        time.sleep(3.5)
+        time.sleep(3.6)
     elif ys[5] == 'b':
         S.write(data15)
-        time.sleep(3.5)
+        time.sleep(3.6)
     arm_initialize()
+    time.sleep(0.8)
 ################################################################
 # 初赛第一次粗加工打靶并抓取
 def arm_cjg():
@@ -2714,33 +2715,33 @@ def arm_zcq_2():
     #######第1个物料#######
     if ys[3] == 'r':
         S.write(data6)
-        time.sleep(4.3)
+        time.sleep(4.4)
     elif ys[3] == 'g':
         S.write(data5)
-        time.sleep(4.2)
+        time.sleep(4.3)
     elif ys[3] == 'b':
         S.write(data4)
-        time.sleep(3.7)
+        time.sleep(3.8)
     #######第2个物料#######
     if ys[4] == 'r':
         S.write(data6)
-        time.sleep(4.3)
+        time.sleep(4.4)
     elif ys[4] == 'g':
         S.write(data5)
-        time.sleep(4.2)
+        time.sleep(4.3)
     elif ys[4] == 'b':
         S.write(data4)
-        time.sleep(3.7)
+        time.sleep(3.8)
     #######第3个物料#######
     if ys[5] == 'r':
         S.write(data6)
-        time.sleep(4.3)
+        time.sleep(4.4)
     elif ys[5] == 'g':
         S.write(data5)
-        time.sleep(4.2)
+        time.sleep(4.3)
     elif ys[5] == 'b':
         S.write(data4)
-        time.sleep(3.7)
+        time.sleep(3.8)
     arm_initialize()  
     time.sleep(0.8)
 ################################################################
@@ -3540,7 +3541,7 @@ while True:
                         # 抓完物料定位粗加工区
                         global_value.set_value('model', 0)
                         MoveTime('f', 0.40*f)
-                        MoveTime('cm', 0.7*f)
+                        MoveTime('cm', 1.0*f)  # 0.7
                         ###################################修正###################################
                         start_z = second_z
                         ToAngle_Plus(start_z)
@@ -3602,18 +3603,18 @@ while True:
                         # 放置好物料后返回转盘
                         i_flag = 2
                         global_value.set_value('model', 0)
-                        MoveTime('b', 1.12*f)
+                        MoveTime('b', 1.19*f)
                         MoveTime('back_zp', 1.0*f)
                         ToAngle_Plus(second_z)
                         global_value.set_value('model', 0)
                         start_z = second_z
-                        MoveTime('b', 2.29*f)
+                        MoveTime('b', 2.28*f) #实验室2.29
                         MoveTime('back_zp', 1.1*f)
                         ToAngle_Plus(first_z)
                         global_value.set_value('model', 0)
                         ###################################修正###################################
                         start_z = first_z
-                        MoveTime('b', 0.5*f)
+                        MoveTime('b', 0.35*f)  #0.4
                         OpenLight()
                         time.sleep(0.5)
                         ###################################
@@ -3631,7 +3632,7 @@ while True:
                         if abs(start_z - get_angle(2)) > 2:
                             ToAngle_adjust(start_z)
                             adjust_zp_1(zp_x, zp_y) #定位
-                        CloseLight()
+                        OpenUpLight()
                         ###################################
                         # 抓取第二波物料
                         arm_see_wl()
@@ -3707,7 +3708,7 @@ while True:
                         ToAngle_Plus(start_z)
                         global_value.set_value('model', 0)
                         
-                        MoveTime('f', 2.73*f)
+                        MoveTime('f', 2.70*f)  #2.72
                         MoveTime('hj_2', 0.7*f)
                     elif a == 0:
                         print('exit preperation')
