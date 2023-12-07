@@ -3515,7 +3515,7 @@ while True:
                         IMG_up.start()
                         global_value.set_value('frame_up_flag', 1)
                         MoveTime('f', 1.4*f)
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         arm_aim_turntable()
                         print(ys)
@@ -3547,7 +3547,7 @@ while True:
                         ToAngle_Plus(start_z)
                         global_value.set_value('model',0)
                         MoveTime('f', 1.30*f)
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_aim_bullseye()
@@ -3578,7 +3578,7 @@ while True:
                         ToAngle_Plus(start_z)
                         global_value.set_value('model', 0)
                         MoveTime('f', 1.23*f)
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_aim_bullseye()
@@ -3615,7 +3615,7 @@ while True:
                         ###################################修正###################################
                         start_z = first_z
                         MoveTime('b', 0.35*f)  #0.4
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         ###################################
                         # 定位转盘
@@ -3649,7 +3649,7 @@ while True:
                         ToAngle_Plus(start_z)
                         global_value.set_value('model', 0)
                         MoveTime('f', 1.30*f)
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_aim_bullseye()
@@ -3680,7 +3680,7 @@ while True:
                         ToAngle_Plus(start_z)
                         global_value.set_value('model', 0)
                         MoveTime('f', 1.23*f)
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         global_value.set_value('model', 1)
                         arm_aim_bullseye()
@@ -3789,7 +3789,7 @@ while True:
                         ToAngle_Plus(third_z)
                         global_value.set_value('model', 0)
                         start_z = third_z
-                        OpenLight()
+                        OpenUpLight()
                         MoveTime('b', 1.35*f)
                         arm_see_wl()
                         time.sleep(1)
@@ -3846,7 +3846,7 @@ while True:
                         MoveTime('b', 0.9*f)
                         ###################################
                         # 对准精加工
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_aim_bullseye()
@@ -3879,7 +3879,7 @@ while True:
                             ToAngle_adjust(start_z)
                         global_value.set_value('model', 0)
                         MoveTime('b', 0.41*f)
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         ###################################
                         # 定位转盘
@@ -3926,7 +3926,7 @@ while True:
                         MoveTime('f', 1.2*f)
                         ###################################
                         # 定位暂存区
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_see_wl()
@@ -3986,7 +3986,7 @@ while True:
                         MoveTime('b', 0.9*f)
                         ###################################
                         # 对准精加工
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         global_value.set_value('model',1)
                         arm_aim_bullseye()
@@ -4019,7 +4019,7 @@ while True:
                             ToAngle_adjust(start_z)
                         global_value.set_value('model', 0)
                         MoveTime('b', 0.41*f)
-                        OpenLight()
+                        OpenUpLight()
                         time.sleep(0.5)
                         ###################################
                         # 定位转盘
@@ -4137,7 +4137,7 @@ while True:
                     print('save no')
                     pass
             elif mes == b'light':
-                OpenLight()
+                OpenUpLight()
             if a == 0:
                 arm_initialize()
             elif a == 1:
@@ -4206,7 +4206,7 @@ while True:
                 else:
                     pass
             elif mes == b'light':
-                OpenLight()
+                OpenUpLight()
             elif mes == b'stop':
                 arm_stop()
             elif mes == b'continue':
@@ -4283,7 +4283,7 @@ while True:
                 else:
                     pass
             elif mes == b'light':
-                OpenLight()
+                OpenUpLight()
             elif mes == b'stop':
                 arm_stop()
             elif mes == b'continue':
@@ -4368,7 +4368,7 @@ while True:
                 else:
                     pass
             elif mes == b'light':
-                OpenLight()
+                OpenUpLight()
             if a == 0:
                 arm_initialize()
             elif a == 1:
