@@ -93,13 +93,13 @@ template_zp_final = cv2.imread('pic/template/template_zp_final.jpg', cv2.IMREAD_
 ################################################################
 def OpenLight():
     GPIO.output(Light_up,1)
-    GPIO.output(Light_down,1)
+    GPIO.output(Light_down,0)
 def CloseLight():
     GPIO.output(Light_up,0)
     GPIO.output(Light_down,0)
 def OpenDownLight():
     GPIO.output(Light_up,0)
-    GPIO.output(Light_down,1)
+    GPIO.output(Light_down,0)
 def OpenUpLight():
     GPIO.output(Light_up,1)
     GPIO.output(Light_down,0)
@@ -1403,9 +1403,9 @@ def getPos_2(): # cjg 初赛打靶
     temp = global_value.get_value('frame_up')
     temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
-    h_mask = cv2.inRange(h, 37, 60)
-    s_mask = cv2.inRange(s, 25, 255)
-    v_mask = cv2.inRange(v, 25, 255)
+    h_mask = cv2.inRange(h, 37, 77)
+    s_mask = cv2.inRange(s, 30, 255)
+    v_mask = cv2.inRange(v, 30, 255)
     mask = h_mask & s_mask & v_mask
     result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -3761,9 +3761,9 @@ print('zp_final: ', maxLoc)
 cjg = cv2.imread('pic/pic_sample/cjg.jpg')
 temp_hsv = cv2.cvtColor(cjg, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 37, 60)
-s_mask = cv2.inRange(s, 25, 255)
-v_mask = cv2.inRange(v, 25, 255)
+h_mask = cv2.inRange(h, 37, 77)
+s_mask = cv2.inRange(s, 30, 255)
+v_mask = cv2.inRange(v, 30, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -3773,9 +3773,9 @@ print('cjg: ', maxLoc)
 cjg = cv2.imread('pic/pic_sample/jjg.jpg')
 temp_hsv = cv2.cvtColor(cjg, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 37, 60)
-s_mask = cv2.inRange(s, 25, 255)
-v_mask = cv2.inRange(v, 25, 255)
+h_mask = cv2.inRange(h, 37, 77)
+s_mask = cv2.inRange(s, 30, 255)
+v_mask = cv2.inRange(v, 30, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -3975,7 +3975,6 @@ while True:
                         ToAngle_adjust(first_z)
                         global_value.set_value('model', 0)
                         MoveTime('f', 0.8*f)
-                        OpenDownLight()
                         while len(ys) == 0:
                             if cap_temp.isOpened():
                                 print('down video is work')
@@ -4283,7 +4282,6 @@ while True:
                         ToAngle_adjust(first_z)
                         global_value.set_value('model', 0)
                         MoveTime('f', 0.8*f)
-                        OpenDownLight()
                         while len(ys) == 0:
                             if cap_temp.isOpened():
                                 ret, frame = cap_temp.read()
@@ -4425,7 +4423,6 @@ while True:
                         if abs(start_z - get_angle(2)) > 0.5:
                             ToAngle_adjust(start_z)
                             adjust_zp_2(zp_final_x, zp_final_y)
-                        OpenDownLight()
                         ###################################
                         # 打靶成品区
                         arm_cpq_1()

@@ -93,13 +93,13 @@ template_zp_final = cv2.imread('pic/template/template_zp_final.jpg', cv2.IMREAD_
 ################################################################
 def OpenLight():
     GPIO.output(Light_up,1)
-    GPIO.output(Light_down,1)
+    GPIO.output(Light_down,0)
 def CloseLight():
     GPIO.output(Light_up,0)
     GPIO.output(Light_down,0)
 def OpenDownLight():
     GPIO.output(Light_up,0)
-    GPIO.output(Light_down,1)
+    GPIO.output(Light_down,0)
 def OpenUpLight():
     GPIO.output(Light_up,1)
     GPIO.output(Light_down,0)
@@ -604,7 +604,7 @@ def MoveTime(dir, t):
     if dir == 'f':
         move('front')
         speed_r = 78
-        speed_l = 90
+        speed_l = 88
         t1 = t2 = time.time()
         global_value.set_value('targetA', speed_r)
         global_value.set_value('targetB', speed_l)
@@ -697,7 +697,7 @@ def MoveTime(dir, t):
         global_value.set_value('targetD', 0)
     elif dir == 'b':
         move('back')
-        speed_l = 90 #实验室88
+        speed_l = 88 #实验室88
         speed_r = 78
         t1 = t2 = time.time()
         global_value.set_value('targetA', speed_r)
@@ -1403,9 +1403,9 @@ def getPos_2(): # cjg 初赛打靶
     temp = global_value.get_value('frame_up')
     temp_hsv = cv2.cvtColor(temp, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(temp_hsv)
-    h_mask = cv2.inRange(h, 37, 60)
-    s_mask = cv2.inRange(s, 25, 255)
-    v_mask = cv2.inRange(v, 25, 255)
+    h_mask = cv2.inRange(h, 37, 77)
+    s_mask = cv2.inRange(s, 30, 255)
+    v_mask = cv2.inRange(v, 30, 255)
     mask = h_mask & s_mask & v_mask
     result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -3278,9 +3278,9 @@ print('zp_final: ', maxLoc)
 cjg = cv2.imread('pic/pic_sample/cjg.jpg')
 temp_hsv = cv2.cvtColor(cjg, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 37, 60)
-s_mask = cv2.inRange(s, 25, 255)
-v_mask = cv2.inRange(v, 25, 255)
+h_mask = cv2.inRange(h, 37, 77)
+s_mask = cv2.inRange(s, 30, 255)
+v_mask = cv2.inRange(v, 30, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -3290,22 +3290,22 @@ print('cjg: ', maxLoc)
 cjg = cv2.imread('pic/pic_sample/jjg.jpg')
 temp_hsv = cv2.cvtColor(cjg, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 37, 60)
-s_mask = cv2.inRange(s, 25, 255)
-v_mask = cv2.inRange(v, 25, 255)
+h_mask = cv2.inRange(h, 37, 77)
+s_mask = cv2.inRange(s, 30, 255)
+v_mask = cv2.inRange(v, 30, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
 jjg_x, jjg_y = maxLoc
-jjg_x, jjg_y = cjg_x, cjg_y
+# jjg_x, jjg_y = cjg_x, cjg_y
 print('jjg: ', maxLoc)
 ################################################################
 zcq1 = cv2.imread('pic/pic_sample/zcq1.jpg')
 temp_hsv = cv2.cvtColor(zcq1, cv2.COLOR_BGR2HSV)
 h, s, v = cv2.split(temp_hsv)
-h_mask = cv2.inRange(h, 37, 58)
-s_mask = cv2.inRange(s, 43, 255)
-v_mask = cv2.inRange(v, 46, 255)
+h_mask = cv2.inRange(h, 37, 77)
+s_mask = cv2.inRange(s, 30, 255)
+v_mask = cv2.inRange(v, 30, 255)
 mask = h_mask & s_mask & v_mask
 result = cv2.matchTemplate(mask, template_cjg, cv2.TM_CCOEFF_NORMED)
 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(result)
@@ -3492,7 +3492,6 @@ while True:
                         ToAngle_adjust(first_z)
                         global_value.set_value('model', 0)
                         MoveTime('f', 0.8*f)
-                        OpenDownLight()
                         while len(ys) == 0:
                             if cap_temp.isOpened():
                                 print('down video is work')
@@ -3760,7 +3759,6 @@ while True:
                         global_value.set_value('model', 0)
                         arm_initialize()
                         MoveTime('f', 0.73*f)
-                        OpenDownLight()
                         while len(ys) == 0:
                             if cap_temp.isOpened():
                                 ret, frame = cap_temp.read()
@@ -3900,7 +3898,7 @@ while True:
                         if abs(start_z - get_angle(2)) > 0.5:
                             ToAngle_adjust(start_z)
                             adjust_zp_final(zp_final_x, zp_final_y)
-                        OpenDownLight()
+                        OpenUpLight()
                         ###################################
                         # 打靶成品区
                         arm_cpq_1()
